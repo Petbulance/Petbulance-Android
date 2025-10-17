@@ -1,4 +1,4 @@
-package com.example.presentation.screen.home
+package com.example.presentation.screen.feature.home
 
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel

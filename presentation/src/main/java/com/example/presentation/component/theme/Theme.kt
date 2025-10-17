@@ -15,14 +15,14 @@ import com.example.domain.model.type.AppTheme
 private val DarkColorScheme = darkColorScheme()
 private val LightColorScheme = lightColorScheme()
 
-object SiriaTemplateTheme {
-    val colorScheme: SiriaTemplateColorScheme
+object PetbulanceTheme {
+    val colorScheme: PetbulanceColorScheme
         @Composable
         get() = LocalTaskOverflowColorScheme.current
 }
 
 @Composable
-fun SiriaTemplateTheme(
+fun PetbulanceTheme(
     appTheme: AppTheme = AppTheme.DEVICE,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

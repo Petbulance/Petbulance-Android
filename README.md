@@ -1,7 +1,4 @@
-## Android Project Template
-
-- Siria22's Android Template
-- Last update: 2025-10-17
+## Petbulance
 
 ## Structure
 
@@ -70,26 +67,6 @@
 | JUnit           | `4.13.2` | `app`, `data`, `domain`, `presentation` | Java 및 Kotlin 코드의 단위 테스트를 위한 표준 프레임워크입니다.  |
 | Espresso        | `3.7.0`  | `app`, `data`                           | Android UI 테스트를 자동화하는 데 사용됩니다.             |
 | Compose UI Test | `-`      | `app`                                   | Jetpack Compose UI의 동작을 검증하기 위한 테스트 도구입니다. |
-
-
-## TODO
-
-### CheckList
-
-- AndroidManifest.xml
-  - 필요한 권한, 하드웨어 접근 요청, API key 등 확인 
-
-- 이름 변경
-  - build.gradle.kts (:app) -> namespace
-  - SiriaTemplateTheme
-  - SiriaTemplateColorScheme
-  - Strings.xml : "app_name"
-  - settings.gradle.kts : "rootProject.name"
-
-- libs.version.toml: 모든 의존성 버전 확인 후 조율
-
-- AppKeyProvider, CryptoManager
-  - Secret 관리 정책에 따라 TODO 구현
 
 
 (* 일부 내용은 Windsurf - Gemini 2.5 Pro로 작성됨 *)

@@ -1,4 +1,4 @@
-package com.example.presentation.screen.home
+package com.example.presentation.screen.feature.home
 
 import androidx.lifecycle.SavedStateHandle
 import com.example.presentation.utils.BaseViewModel
