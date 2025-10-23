@@ -23,7 +23,7 @@ object PetbulanceTheme {
 
 @Composable
 fun PetbulanceTheme(
-    appTheme: AppTheme = AppTheme.DEVICE,
+    appTheme: AppTheme = AppTheme.DAYLIGHT,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
