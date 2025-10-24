@@ -19,12 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+object ColorObject{
+    object Provider {
+        val KAKAO = Color(0xFFFEE500)
+        val NAVER = Color(0xFF00C73C)
+        val GOOGLE = Color(0xFFFFFFFF)
+    }
+}
+
 private val LightColorPalette = PetbulanceColorScheme(
-    primary = Color(0xFF222051),
-    lightPrimary = Color(0xFF8B87EA),
+    primary = Color(0xFF2C6A45),
     secondary = Color(0xFF637387),
-    commonText = Color(0xFF000000),
-    descriptionText = Color(0xFF637387),
+    commonText = Color(0xFF111827),
+    descriptionText = Color(0xFF2E3338),
     warningText = Color(0xFFD32F2F),
     iconTint = Color(0xFF000000),
     inactivatedIconColor = Color(0xFFBCBCBC),
@@ -41,7 +48,6 @@ private val LightColorPalette = PetbulanceColorScheme(
 
 private val DarkColorPalette = PetbulanceColorScheme(
     primary = Color(0xFF5A57C9),
-    lightPrimary = Color(0xFF8B87EA),
     secondary = Color(0xFFB0BEC5),
     commonText = Color(0xFFF0F0F0),
     descriptionText = Color(0xFF90A4AE),
@@ -61,21 +67,20 @@ private val DarkColorPalette = PetbulanceColorScheme(
 
 class PetbulanceColorScheme(
     var primary: Color,
-    var lightPrimary: Color,
     var secondary: Color,
     var commonText: Color,
     var descriptionText: Color,
-    var warningText: Color,
-    var iconTint: Color,
-    var inactivatedIconColor: Color,
-    var inactivatedTextColor: Color,
-    var bottomNavIconTint: Color,
-    var surface: Color,
-    var background: Color,
-    var primaryButtonColor: Color,
-    var onPrimaryButtonColor: Color,
-    var secondaryButtonColor: Color,
-    var onSecondaryButtonColor: Color,
+    var warningText: Color,             /* TODO : undefined */
+    var iconTint: Color,                /* TODO : undefined */
+    var inactivatedIconColor: Color,    /* TODO : undefined */
+    var inactivatedTextColor: Color,    /* TODO : undefined */
+    var bottomNavIconTint: Color,       /* TODO : undefined */
+    var surface: Color,                 /* TODO : undefined */
+    var background: Color,              /* TODO : undefined */
+    var primaryButtonColor: Color,      /* TODO : undefined */
+    var onPrimaryButtonColor: Color,    /* TODO : undefined */
+    var secondaryButtonColor: Color,    /* TODO : undefined */
+    var onSecondaryButtonColor: Color,  /* TODO : undefined */
     val isDark: Boolean
 )
 
@@ -98,7 +103,6 @@ private fun ColorPalettePreview() {
     PetbulanceTheme {
         val colors = listOf(
             "primary" to PetbulanceTheme.colorScheme.primary,
-            "lightPrimary" to PetbulanceTheme.colorScheme.lightPrimary,
             "secondary" to PetbulanceTheme.colorScheme.secondary,
             "commonText" to PetbulanceTheme.colorScheme.commonText,
             "descriptionText" to PetbulanceTheme.colorScheme.descriptionText,
