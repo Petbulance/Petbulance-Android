@@ -28,7 +28,7 @@ jobs:
 
       # 4. Style Dictionary 실행 (토큰 변환)
       - name: Build Design Tokens
-        run: style-dictionary build
+        run: style-dictionary build --config tokens/config.json
 
       - name: Get Current Date (KST)
         run: echo "TODAY=$(TZ='Asia/Seoul' date +'%Y-%m-%d')" >> $GITHUB_ENV
