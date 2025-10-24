@@ -1,0 +1,19 @@
+{
+  "source": [
+    "tokens/tokens.json"
+  ],
+  "platforms": {
+    "android-compose": {
+      "transformGroup": "compose",
+      "buildPath": "presentation/src/main/java/com/example/presentation/component/theme/",
+      "files": [
+        {
+          "destination": "GeneratedColors.kt",
+          "format": "compose/object",
+          "className": "GeneratedColors",
+          "packageName": "com.example.presentation.component.theme"
+        }
+      ]
+    }
+  }
+}
