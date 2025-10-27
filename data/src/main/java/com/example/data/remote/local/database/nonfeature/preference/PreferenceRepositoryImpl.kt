@@ -1,4 +1,4 @@
-package com.example.data.remote.local.preference
+package com.example.data.remote.local.database.nonfeature.preference
 
 import com.example.domain.usecase.nonfeature.preference.PreferenceRepository
 import kotlinx.coroutines.flow.Flow

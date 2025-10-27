@@ -2,7 +2,7 @@ package com.example.data.common.di.room
 
 import android.content.Context
 import androidx.room.Room
-import com.example.data.remote.local.database.dao.ExampleDao
+import com.example.data.remote.local.database.example.dao.ExampleDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

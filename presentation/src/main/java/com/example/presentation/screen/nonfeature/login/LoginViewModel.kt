@@ -2,7 +2,7 @@ package com.example.presentation.screen.nonfeature.login
 
 import android.util.Log
 import com.example.domain.model.nonfeature.login.UserInfo
-import com.example.domain.model.type.LoginProvider
+import com.example.domain.model.nonfeature.login.LoginProviderType
 import com.example.domain.usecase.nonfeature.login.RequestTokenToServerUseCase
 import com.example.domain.usecase.nonfeature.login.SaveTokensUseCaseUseCase
 import com.example.domain.utils.login.DomainLoginRequest
@@ -47,7 +47,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun requestTokenToServer(accessToken: String, platform: LoginProvider) {
+    private suspend fun requestTokenToServer(accessToken: String, platform: LoginProviderType) {
         _state.value = LoginState.OnProgress
 
         runCatching {

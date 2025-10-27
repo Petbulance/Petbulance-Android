@@ -1,11 +1,11 @@
-package com.example.data.remote.local.database.dao
+package com.example.data.remote.local.database.example.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.data.remote.local.database.entity.ExampleEntity
+import com.example.data.remote.local.database.example.entity.ExampleEntity
 
 @Dao
 interface ExampleDao {

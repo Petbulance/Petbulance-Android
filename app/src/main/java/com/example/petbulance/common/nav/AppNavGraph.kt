@@ -16,7 +16,7 @@ fun AppNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ScreenDestinations.Home.route,
+        startDestination = ScreenDestinations.Splash.route,
         modifier = modifier
     ) {
         // Non-feature

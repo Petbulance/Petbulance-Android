@@ -1,6 +1,6 @@
 package com.example.data.common.di
 
-import com.example.data.remote.local.preference.PreferenceRepositoryImpl
+import com.example.data.remote.local.database.nonfeature.preference.PreferenceRepositoryImpl
 import com.example.data.remote.local.repository.ExampleRepositoryImpl
 import com.example.data.repository.nonfeature.login.LoginRepositoryImpl
 import com.example.data.repository.nonfeature.login.TokenRepositoryImpl

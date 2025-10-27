@@ -1,6 +1,6 @@
 package com.example.presentation.screen.nonfeature.login
 
-import com.example.domain.model.type.LoginProvider
+import com.example.domain.model.nonfeature.login.LoginProviderType
 import com.example.presentation.utils.error.ErrorEvent
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -16,7 +16,7 @@ sealed class LoginState {
 }
 
 sealed class LoginIntent {
-    data class Login(val accessToken: String, val provider: LoginProvider) : LoginIntent()
+    data class Login(val accessToken: String, val provider: LoginProviderType) : LoginIntent()
 }
 
 sealed class LoginEvent {

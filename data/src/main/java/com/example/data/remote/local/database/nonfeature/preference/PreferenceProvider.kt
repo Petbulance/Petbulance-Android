@@ -1,4 +1,4 @@
-package com.example.data.remote.local.preference
+package com.example.data.remote.local.database.nonfeature.preference
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit

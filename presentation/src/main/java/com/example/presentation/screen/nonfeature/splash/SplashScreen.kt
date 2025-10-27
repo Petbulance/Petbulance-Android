@@ -1,5 +1,6 @@
 package com.example.presentation.screen.nonfeature.splash
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,20 +42,25 @@ fun SplashScreen(
     argument: SplashArgument,
 ) {
     var errorDialogState by remember { mutableStateOf(ErrorDialogState.idle()) }
-    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(argument.event) {
         argument.event.collect { event ->
             when (event) {
                 is SplashEvent.Navigate.ToLogin -> {
-                    /* TODO : navigate to login screen */
+                    navController.safeNavigate(ScreenDestinations.Login.route){
+                        popUpTo(ScreenDestinations.Splash.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is SplashEvent.Navigate.ToHome -> {
+                    Log.d("siria22", "ToHome")
                     /* TODO : navigate to home screen */
                 }
 
                 is SplashEvent.Navigate.ToTermsAgreement -> {
+                    Log.d("siria22", "TermsUpdateNeeded")
                     /* TODO : navigate to terms agreement screen */
                 }
 

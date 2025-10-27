@@ -1,6 +1,6 @@
 package com.example.data.remote.network.nonfeature.users
 
-import com.example.data.remote.network.nonfeature.users.model.DataLoginRequest
+import com.example.data.remote.network.nonfeature.users.model.request.DataLoginRequest
 import com.example.data.utils.BASE_URL
 import com.example.data.utils.safeApiCall
 import io.ktor.client.HttpClient

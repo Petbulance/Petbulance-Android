@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.domain.model.type.LoginProvider
+import com.example.domain.model.nonfeature.login.LoginProviderType
 import com.example.presentation.R
 import com.example.presentation.component.theme.ColorObject
 import com.example.presentation.component.theme.PetbulanceTheme
@@ -60,15 +60,15 @@ fun LoginScreen(
     var errorDialogState by remember { mutableStateOf(ErrorDialogState.idle()) }
 
     val launchGoogleLogin = rememberGoogleLoginManager { accessToken ->
-        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProvider.GOOGLE))
+        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProviderType.GOOGLE))
     }
 
     val launchNaverLogin = rememberNaverLoginManager { accessToken ->
-        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProvider.NAVER))
+        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProviderType.NAVER))
     }
 
     val launchKakaoLogin = rememberKakaoLoginManager { accessToken ->
-        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProvider.KAKAO))
+        argument.intent(LoginIntent.Login(accessToken ?: "", LoginProviderType.KAKAO))
     }
 
     LaunchedEffect(argument.event) {
@@ -180,15 +180,15 @@ private fun LoginButtonColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoginButton(
-            provider = LoginProvider.KAKAO,
+            provider = LoginProviderType.KAKAO,
             handler = onKakaoLoginButtonClicked
         )
         LoginButton(
-            provider = LoginProvider.NAVER,
+            provider = LoginProviderType.NAVER,
             handler = onNaverLoginButtonClicked
         )
         LoginButton(
-            provider = LoginProvider.GOOGLE,
+            provider = LoginProviderType.GOOGLE,
             iconSize = 28.dp,
             handler = onGoogleLoginButtonClicked
         )
@@ -196,34 +196,34 @@ private fun LoginButtonColumn(
 }
 
 @Composable
-private fun LoginButton(provider: LoginProvider, iconSize: Dp = 20.dp, handler: () -> Unit) {
+private fun LoginButton(provider: LoginProviderType, iconSize: Dp = 20.dp, handler: () -> Unit) {
 
     val iconRes = when (provider) {
-        LoginProvider.GOOGLE -> R.drawable.login_google
-        LoginProvider.KAKAO -> R.drawable.login_kakao
-        LoginProvider.NAVER -> R.drawable.login_naver
+        LoginProviderType.GOOGLE -> R.drawable.login_google
+        LoginProviderType.KAKAO -> R.drawable.login_kakao
+        LoginProviderType.NAVER -> R.drawable.login_naver
     }
 
     val providerText = when (provider) {
-        LoginProvider.GOOGLE -> "구글"
-        LoginProvider.KAKAO -> "카카오"
-        LoginProvider.NAVER -> "네이버"
+        LoginProviderType.GOOGLE -> "구글"
+        LoginProviderType.KAKAO -> "카카오"
+        LoginProviderType.NAVER -> "네이버"
     }
 
     val textColor = when (provider) {
-        LoginProvider.GOOGLE -> Color.Black
-        LoginProvider.KAKAO -> Color.Black
-        LoginProvider.NAVER -> Color.White
+        LoginProviderType.GOOGLE -> Color.Black
+        LoginProviderType.KAKAO -> Color.Black
+        LoginProviderType.NAVER -> Color.White
     }
 
     val backgroundColor = when (provider) {
-        LoginProvider.GOOGLE -> ColorObject.Provider.GOOGLE
-        LoginProvider.KAKAO -> ColorObject.Provider.KAKAO
-        LoginProvider.NAVER -> ColorObject.Provider.NAVER
+        LoginProviderType.GOOGLE -> ColorObject.Provider.GOOGLE
+        LoginProviderType.KAKAO -> ColorObject.Provider.KAKAO
+        LoginProviderType.NAVER -> ColorObject.Provider.NAVER
     }
 
     val googleButtonBorder =
-        if (provider == LoginProvider.GOOGLE) Color(0xFFD7D7D7) else Color.Transparent
+        if (provider == LoginProviderType.GOOGLE) Color(0xFFD7D7D7) else Color.Transparent
 
     Row(
         horizontalArrangement = Arrangement.Center,
