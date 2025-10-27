@@ -1,4 +1,6 @@
 import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.library")
@@ -8,7 +10,18 @@ plugins {
     alias(libs.plugins.devtoolsKsp)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace = "com.example.presentation"
     compileSdk = 36
 
@@ -17,6 +30,27 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"${localProperties["WEB_CLIENT_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "NAVER_CLIENT_ID",
+            "\"${localProperties["NAVER_CLIENT_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "NAVER_CLIENT_SECRET",
+            "\"${localProperties["NAVER_CLIENT_SECRET"]}\""
+        )
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            "\"${localProperties["KAKAO_NATIVE_APP_KEY"]}\""
+        )
     }
 
     buildTypes {
@@ -91,6 +125,11 @@ dependencies {
     implementation(libs.credential.manager.google)
     implementation(libs.googleid)
     implementation(libs.kotlinx.coroutines.play.services)
+
+    // Login
+    implementation(libs.kakao.login)
+    implementation(libs.naver.login)
+    implementation(libs.googleid)
 
     // Test
     testImplementation(libs.junit)

@@ -7,5 +7,7 @@ package com.example.data.common.di.security
  * @property value The string value of the alias.
  */
 enum class AppKeyAlias(val value: String) {
-    DEFAULT_ENCRYPT("default_encrypt")
+    DEFAULT_ENCRYPT("default_encrypt"),
+    ACCESS_TOKEN("access_token_key"),
+    REFRESH_TOKEN("refresh_token_key")
 }
