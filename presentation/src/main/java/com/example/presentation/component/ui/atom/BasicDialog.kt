@@ -51,7 +51,7 @@ fun BasicDialog(
             modifier = modifier
                 .align(Alignment.Center)
                 .background(
-                    color = PetbulanceTheme.colorScheme.background,
+                    color = PetbulanceTheme.colorScheme.bg.default,
                     shape = LargeRoundedCorner
                 )
                 .padding(24.dp)
@@ -76,12 +76,12 @@ private fun BasicDialogPreview() {
             Text(
                 text = "Sample Text",
                 style = MaterialTheme.typography.bodyMedium,
-                color = PetbulanceTheme.colorScheme.descriptionText
+                color = PetbulanceTheme.colorScheme.text.caption
             )
             Text(
                 text = "Sample Text",
                 style = MaterialTheme.typography.headlineSmall,
-                color = PetbulanceTheme.colorScheme.commonText
+                color = PetbulanceTheme.colorScheme.text.primary
             )
         }
     }

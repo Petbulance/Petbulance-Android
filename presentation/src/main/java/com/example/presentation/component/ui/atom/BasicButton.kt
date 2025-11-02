@@ -23,15 +23,15 @@ fun BasicButton(
     modifier: Modifier = Modifier
 ) {
     val buttonColor = when (type) {
-        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.primaryButtonColor
-        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.secondaryButtonColor
-        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.surface
+        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.action.primary.default
+        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.action.link.default
+        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.action.primary.default
     }
 
     val textColor = when (type) {
-        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.onPrimaryButtonColor
-        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.onSecondaryButtonColor
-        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.commonText
+        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.text.primary
+        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.text.primary
+        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.text.primary
     }
 
     Box(

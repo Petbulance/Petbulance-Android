@@ -26,20 +26,20 @@ fun BasicCheckBox(
     isChangeable: Boolean = true,
 ) {
     val borderColor = if (isChangeable) {
-        PetbulanceTheme.colorScheme.primary
+        PetbulanceTheme.colorScheme.action.link.default
     } else {
-        PetbulanceTheme.colorScheme.inactivatedIconColor
+        PetbulanceTheme.colorScheme.action.link.pressed
     }
 
     val backgroundColor = if (isChangeable) {
         if (checkState) {
-            PetbulanceTheme.colorScheme.primary
+            PetbulanceTheme.colorScheme.bg.default
         } else {
             Color.Transparent
         }
     } else {
         if (checkState) {
-            PetbulanceTheme.colorScheme.inactivatedIconColor
+            PetbulanceTheme.colorScheme.icon.basic
         } else {
             Color.Transparent
         }
@@ -67,7 +67,7 @@ fun BasicCheckBox(
             Icon(
                 Icons.Default.Check,
                 contentDescription = "Check",
-                tint = PetbulanceTheme.colorScheme.onPrimaryButtonColor
+                tint = PetbulanceTheme.colorScheme.icon.gnb.selected
             )
         }
     }
