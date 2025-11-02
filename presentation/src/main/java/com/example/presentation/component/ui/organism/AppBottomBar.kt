@@ -99,8 +99,8 @@ private fun BottomNavItem(
     modifier: Modifier,
     onClicked: () -> Unit
 ) {
-    val selectedColor = PetbulanceTheme.colorScheme.iconTint
-    val unselectedColor = PetbulanceTheme.colorScheme.inactivatedIconColor
+    val selectedColor = PetbulanceTheme.colorScheme.icon.gnb.selected
+    val unselectedColor = PetbulanceTheme.colorScheme.icon.gnb.default
 
     val iconColor = if (isSelected) selectedColor else unselectedColor
 
@@ -113,7 +113,7 @@ private fun BottomNavItem(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .background(PetbulanceTheme.colorScheme.surface),
+                .background(PetbulanceTheme.colorScheme.bg.default),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

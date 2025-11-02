@@ -26,13 +26,13 @@ fun ErrorDialog(
         Text(
             text = directErrorTitle,
             style = MaterialTheme.typography.headlineMedium,
-            color = PetbulanceTheme.colorScheme.commonText,
+            color = PetbulanceTheme.colorScheme.text.primary,
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Text(
             text = directErrorMessage ?: errorDialogState.userMessage,
             style = MaterialTheme.typography.bodyMedium,
-            color = PetbulanceTheme.colorScheme.descriptionText,
+            color = PetbulanceTheme.colorScheme.text.caption,
             softWrap = true,
             maxLines = 4,
             overflow = TextOverflow.Ellipsis

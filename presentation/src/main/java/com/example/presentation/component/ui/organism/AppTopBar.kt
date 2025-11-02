@@ -31,7 +31,7 @@ import com.example.presentation.component.theme.PetbulanceTheme
 fun AppTopBar(
     modifier: Modifier = Modifier,
     topBarInfo: TopBarInfo,
-    background: Color = PetbulanceTheme.colorScheme.background,
+    background: Color = PetbulanceTheme.colorScheme.bg.default,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -51,7 +51,7 @@ fun AppTopBar(
         Box(modifier = Modifier.weight(6f)) {
             Text(
                 text = topBarInfo.text,
-                color = PetbulanceTheme.colorScheme.commonText,
+                color = PetbulanceTheme.colorScheme.text.primary,
                 style = MaterialTheme.typography.headlineMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -89,7 +89,7 @@ private fun TopBarLeadingIcon(
     if (isLeadingIconAvailable) {
         Icon(
             imageVector = iconResource,
-            tint = PetbulanceTheme.colorScheme.iconTint,
+            tint = PetbulanceTheme.colorScheme.icon.basic,
             contentDescription = "Leading Icon",
             modifier = modifier
                 .clickable { onLeadingIconClicked() }
@@ -111,7 +111,7 @@ private fun TopBarTrailingIcon(
     if (isTrailingIconAvailable) {
         Icon(
             imageVector = iconResource,
-            tint = PetbulanceTheme.colorScheme.iconTint,
+            tint = PetbulanceTheme.colorScheme.icon.basic,
             contentDescription = "Trailing Icon",
             modifier = modifier
                 .clickable { onTrailingIconClicked() }

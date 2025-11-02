@@ -18,7 +18,7 @@ private val LightColorScheme = lightColorScheme()
 object PetbulanceTheme {
     val colorScheme: PetbulanceColorScheme
         @Composable
-        get() = LocalTaskOverflowColorScheme.current
+        get() = LocalPetbulanceColorScheme.current
 }
 
 @Composable
@@ -33,7 +33,7 @@ fun PetbulanceTheme(
         AppTheme.DEVICE -> isSystemInDarkTheme()
     }
 
-    val customColorScheme = getTaskOverflowColorScheme(useDarkTheme)
+    val customColorScheme = getPetbulanceColorScheme(useDarkTheme)
 
     val materialColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -45,10 +45,10 @@ fun PetbulanceTheme(
         else -> LightColorScheme
     }
 
-    CompositionLocalProvider(LocalTaskOverflowColorScheme provides customColorScheme) {
+    CompositionLocalProvider(LocalPetbulanceColorScheme provides customColorScheme) {
         MaterialTheme(
             colorScheme = materialColorScheme,
-            typography = Typography,
+            typography = NanumTypography,
             content = content
         )
     }

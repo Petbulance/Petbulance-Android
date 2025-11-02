@@ -1,7 +1,7 @@
 package com.example.presentation.component.theme
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-object ColorObject{
+object ColorObject {
     object Provider {
         val KAKAO = Color(0xFFFEE500)
         val NAVER = Color(0xFF00C73C)
@@ -27,68 +27,189 @@ object ColorObject{
     }
 }
 
-private val LightColorPalette = PetbulanceColorScheme(
-    primary = Color(0xFF2C6A45),
-    secondary = Color(0xFF637387),
-    commonText = Color(0xFF111827),
-    descriptionText = Color(0xFF2E3338),
-    warningText = Color(0xFFD32F2F),
-    iconTint = Color(0xFF000000),
-    inactivatedIconColor = Color(0xFFBCBCBC),
-    inactivatedTextColor = Color(0xFF555555),
-    bottomNavIconTint = Color(0xFF637387),
-    surface = Color(0xFFFEFEFE),
-    background = Color(0xFFF3F4F6),
-    primaryButtonColor = Color(0xFF222051),
-    onPrimaryButtonColor = Color(0xFFFFFFFF),
-    secondaryButtonColor = Color(0xFF637387),
-    onSecondaryButtonColor = Color(0xFFFFFFFF),
+private val LightColorScheme = PetbulanceColorScheme(
+
+    // "bg":
+    bg = BgColors.create(
+        default = PetbulancePrimitives.Base.white,
+        subtle = PetbulancePrimitives.Gray.p300,
+        overlay = PetbulancePrimitives.Gray.p900
+    ),
+
+    // "text":
+    text = TextColors.create(
+        primary = PetbulancePrimitives.Base.black,
+        secondary = PetbulancePrimitives.Gray.p800,
+        inverse = PetbulancePrimitives.Gray.p100,
+        tertiary = PetbulancePrimitives.Gray.p700,
+        disabled = PetbulancePrimitives.Gray.p400,
+        caption = PetbulancePrimitives.Gray.p500
+    ),
+
+    // "action":
+    action = ActionColors.create(
+        // "action.primary":
+        primary = ActionStateColors.create(
+            default = PetbulancePrimitives.Primary.p500,
+            hover = PetbulancePrimitives.Primary.p600,
+            pressed = PetbulancePrimitives.Primary.p700,
+            disabled = PetbulancePrimitives.Gray.p300,
+            text = PetbulancePrimitives.Base.white
+        ),
+        // "action.link":
+        link = LinkStateColors.create(
+            default = PetbulancePrimitives.Info.p500,
+            hover = PetbulancePrimitives.Info.p600,
+            pressed = PetbulancePrimitives.Info.p700,
+            disabled = PetbulancePrimitives.Gray.p300,
+            visited = PetbulancePrimitives.Info.p900
+        )
+    ),
+
+    // "status":
+    status = StatusColors.create(
+        // "status.success":
+        success = StatusSet.create(
+            default = PetbulancePrimitives.Primary.p500,
+            bg = PetbulancePrimitives.Primary.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.error":
+        error = StatusSet.create(
+            default = PetbulancePrimitives.Negative.p500,
+            bg = PetbulancePrimitives.Negative.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.warning":
+        warning = StatusSet.create(
+            default = PetbulancePrimitives.Warning.p500,
+            bg = PetbulancePrimitives.Warning.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.info":
+        info = StatusSet.create(
+            default = PetbulancePrimitives.Info.p500,
+            bg = PetbulancePrimitives.Info.p100,
+            text = PetbulancePrimitives.Gray.p900
+        )
+    ),
+
+    // "border":
+    border = BorderColors.create(
+        active = PetbulancePrimitives.Gray.p900,
+        tertiary = PetbulancePrimitives.Gray.p300,
+        secondary = PetbulancePrimitives.Gray.p400,
+        white = PetbulancePrimitives.Base.white
+    ),
+
+    // "icon":
+    icon = IconColors.create(
+        // "icon.gnb":
+        gnb = GnbIconColors.create(
+            selected = PetbulancePrimitives.Primary.p500,
+            default = PetbulancePrimitives.Gray.p500
+        ),
+        // "icon.basic":
+        basic = PetbulancePrimitives.Gray.p600
+    ),
+
     isDark = false
 )
 
 private val DarkColorPalette = PetbulanceColorScheme(
-    primary = Color(0xFF5A57C9),
-    secondary = Color(0xFFB0BEC5),
-    commonText = Color(0xFFF0F0F0),
-    descriptionText = Color(0xFF90A4AE),
-    warningText = Color(0xFFFF6659),
-    iconTint = Color(0xFFF0F0F0),
-    inactivatedIconColor = Color(0xFF555555),
-    inactivatedTextColor = Color(0xFFBCBCBC),
-    bottomNavIconTint = Color(0xFFB0BEC5),
-    surface = Color(0xFF2C2C3A),
-    background = Color(0xFF1A1A24),
-    primaryButtonColor = Color(0xFF5A57C9),
-    onPrimaryButtonColor = Color(0xFFF0F0F0),
-    secondaryButtonColor = Color(0xFFB0BEC5),
-    onSecondaryButtonColor = Color(0xFF000000),
-    isDark = true
+    /* TODO : 다크모드 색상 지정 */
+    // "bg":
+    bg = BgColors.create(
+        default = PetbulancePrimitives.Base.white,
+        subtle = PetbulancePrimitives.Gray.p300,
+        overlay = PetbulancePrimitives.Gray.p900
+    ),
+
+    // "text":
+    text = TextColors.create(
+        primary = PetbulancePrimitives.Base.black,
+        secondary = PetbulancePrimitives.Gray.p800,
+        inverse = PetbulancePrimitives.Gray.p100,
+        tertiary = PetbulancePrimitives.Gray.p700,
+        disabled = PetbulancePrimitives.Gray.p400,
+        caption = PetbulancePrimitives.Gray.p500
+    ),
+
+    // "action":
+    action = ActionColors.create(
+        // "action.primary":
+        primary = ActionStateColors.create(
+            default = PetbulancePrimitives.Primary.p500,
+            hover = PetbulancePrimitives.Primary.p600,
+            pressed = PetbulancePrimitives.Primary.p700,
+            disabled = PetbulancePrimitives.Gray.p300,
+            text = PetbulancePrimitives.Base.white
+        ),
+        // "action.link":
+        link = LinkStateColors.create(
+            default = PetbulancePrimitives.Info.p500,
+            hover = PetbulancePrimitives.Info.p600,
+            pressed = PetbulancePrimitives.Info.p700,
+            disabled = PetbulancePrimitives.Gray.p300,
+            visited = PetbulancePrimitives.Info.p900
+        )
+    ),
+
+    // "status":
+    status = StatusColors.create(
+        // "status.success":
+        success = StatusSet.create(
+            default = PetbulancePrimitives.Primary.p500,
+            bg = PetbulancePrimitives.Primary.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.error":
+        error = StatusSet.create(
+            default = PetbulancePrimitives.Negative.p500,
+            bg = PetbulancePrimitives.Negative.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.warning":
+        warning = StatusSet.create(
+            default = PetbulancePrimitives.Warning.p500,
+            bg = PetbulancePrimitives.Warning.p100,
+            text = PetbulancePrimitives.Gray.p900
+        ),
+        // "status.info":
+        info = StatusSet.create(
+            default = PetbulancePrimitives.Info.p500,
+            bg = PetbulancePrimitives.Info.p100,
+            text = PetbulancePrimitives.Gray.p900
+        )
+    ),
+
+    // "border":
+    border = BorderColors.create(
+        active = PetbulancePrimitives.Gray.p900,
+        tertiary = PetbulancePrimitives.Gray.p300,
+        secondary = PetbulancePrimitives.Gray.p400,
+        white = PetbulancePrimitives.Base.white
+    ),
+
+    // "icon":
+    icon = IconColors.create(
+        // "icon.gnb":
+        gnb = GnbIconColors.create(
+            selected = PetbulancePrimitives.Primary.p500,
+            default = PetbulancePrimitives.Gray.p500
+        ),
+        // "icon.basic":
+        basic = PetbulancePrimitives.Gray.p600
+    ),
+
+    isDark = true,
 )
 
-class PetbulanceColorScheme(
-    var primary: Color,
-    var secondary: Color,
-    var commonText: Color,
-    var descriptionText: Color,
-    var warningText: Color,             /* TODO : undefined */
-    var iconTint: Color,                /* TODO : undefined */
-    var inactivatedIconColor: Color,    /* TODO : undefined */
-    var inactivatedTextColor: Color,    /* TODO : undefined */
-    var bottomNavIconTint: Color,       /* TODO : undefined */
-    var surface: Color,                 /* TODO : undefined */
-    var background: Color,              /* TODO : undefined */
-    var primaryButtonColor: Color,      /* TODO : undefined */
-    var onPrimaryButtonColor: Color,    /* TODO : undefined */
-    var secondaryButtonColor: Color,    /* TODO : undefined */
-    var onSecondaryButtonColor: Color,  /* TODO : undefined */
-    val isDark: Boolean
-)
-
-val LocalTaskOverflowColorScheme = staticCompositionLocalOf { LightColorPalette }
+val LocalPetbulanceColorScheme = staticCompositionLocalOf { LightColorScheme }
 
 @Composable
-fun getTaskOverflowColorScheme(darkTheme: Boolean): PetbulanceColorScheme {
-    return if (darkTheme) DarkColorPalette else LightColorPalette
+fun getPetbulanceColorScheme(darkTheme: Boolean): PetbulanceColorScheme {
+    return if (darkTheme) DarkColorPalette else LightColorScheme
 }
 
 @Preview(name = "Light Color Palette", showBackground = true, widthDp = 300)
@@ -96,53 +217,96 @@ fun getTaskOverflowColorScheme(darkTheme: Boolean): PetbulanceColorScheme {
     name = "Dark Color Palette",
     showBackground = true,
     widthDp = 300,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun ColorPalettePreview() {
     PetbulanceTheme {
+        val colorScheme = PetbulanceTheme.colorScheme
         val colors = listOf(
-            "primary" to PetbulanceTheme.colorScheme.primary,
-            "secondary" to PetbulanceTheme.colorScheme.secondary,
-            "commonText" to PetbulanceTheme.colorScheme.commonText,
-            "descriptionText" to PetbulanceTheme.colorScheme.descriptionText,
-            "iconTint" to PetbulanceTheme.colorScheme.iconTint,
-            "inactivatedColor" to PetbulanceTheme.colorScheme.inactivatedIconColor,
-            "inactivatedTextColor" to PetbulanceTheme.colorScheme.inactivatedTextColor,
-            "bottomNavIconTint" to PetbulanceTheme.colorScheme.bottomNavIconTint,
-            "surface" to PetbulanceTheme.colorScheme.surface,
-            "background" to PetbulanceTheme.colorScheme.background,
-            "primaryButtonColor" to PetbulanceTheme.colorScheme.primaryButtonColor,
-            "onPrimaryButtonColor" to PetbulanceTheme.colorScheme.onPrimaryButtonColor,
-            "secondaryButtonColor" to PetbulanceTheme.colorScheme.secondaryButtonColor,
-            "onSecondaryButtonColor" to PetbulanceTheme.colorScheme.onSecondaryButtonColor,
+            // BgColors
+            "bg.default" to colorScheme.bg.default,
+            "bg.subtle" to colorScheme.bg.subtle,
+            "bg.overlay" to colorScheme.bg.overlay,
+
+            // TextColors
+            "text.primary" to colorScheme.text.primary,
+            "text.secondary" to colorScheme.text.secondary,
+            "text.inverse" to colorScheme.text.inverse,
+            "text.tertiary" to colorScheme.text.tertiary,
+            "text.disabled" to colorScheme.text.disabled,
+            "text.caption" to colorScheme.text.caption,
+
+            // ActionColors - Primary
+            "action.primary.default" to colorScheme.action.primary.default,
+            "action.primary.hover" to colorScheme.action.primary.hover,
+            "action.primary.pressed" to colorScheme.action.primary.pressed,
+            "action.primary.disabled" to colorScheme.action.primary.disabled,
+            "action.primary.text" to colorScheme.action.primary.text,
+
+            // ActionColors - Link
+            "action.link.default" to colorScheme.action.link.default,
+            "action.link.hover" to colorScheme.action.link.hover,
+            "action.link.pressed" to colorScheme.action.link.pressed,
+            "action.link.disabled" to colorScheme.action.link.disabled,
+            "action.link.visited" to colorScheme.action.link.visited,
+
+            // StatusColors - Success
+            "status.success.default" to colorScheme.status.success.default,
+            "status.success.bg" to colorScheme.status.success.bg,
+            "status.success.text" to colorScheme.status.success.text,
+
+            // StatusColors - Error
+            "status.error.default" to colorScheme.status.error.default,
+            "status.error.bg" to colorScheme.status.error.bg,
+            "status.error.text" to colorScheme.status.error.text,
+
+            // StatusColors - Warning
+            "status.warning.default" to colorScheme.status.warning.default,
+            "status.warning.bg" to colorScheme.status.warning.bg,
+            "status.warning.text" to colorScheme.status.warning.text,
+
+            // StatusColors - Info
+            "status.info.default" to colorScheme.status.info.default,
+            "status.info.bg" to colorScheme.status.info.bg,
+            "status.info.text" to colorScheme.status.info.text,
+
+            // BorderColors
+            "border.active" to colorScheme.border.active,
+            "border.tertiary" to colorScheme.border.tertiary,
+            "border.secondary" to colorScheme.border.secondary,
+            "border.white" to colorScheme.border.white,
+
+            // IconColors
+            "icon.gnb.selected" to colorScheme.icon.gnb.selected,
+            "icon.gnb.default" to colorScheme.icon.gnb.default,
+            "icon.basic" to colorScheme.icon.basic
         )
 
         val backgroundColor =
-            if (PetbulanceTheme.colorScheme.isDark) Color.Black else Color.White
+            if (PetbulanceTheme.colorScheme.isDark) PetbulancePrimitives.Gray.p900 else PetbulancePrimitives.Base.white
         LazyColumn(
             modifier = Modifier
                 .background(backgroundColor)
-                .padding(16.dp)
+                .padding(4.dp)
         ) {
             items(colors) { (name, color) ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
-                            .border(width = 1.dp, color = Color.Black)
+                            .size(12.dp)
                             .background(color)
                     )
                     Text(
                         text = name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = PetbulanceTheme.colorScheme.commonText,
-                        modifier = Modifier.padding(start = 16.dp)
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorScheme.text.primary,
+                        modifier = Modifier.padding(start = 8.dp)
                     )
                 }
             }

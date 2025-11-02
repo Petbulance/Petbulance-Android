@@ -55,10 +55,10 @@ fun BasicInputTextField(
         modifier = modifier
             .background(Color(0xFFF0F0F0), shape = RoundedCornerShape(6.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        textStyle = textStyle.copy(color = PetbulanceTheme.colorScheme.commonText),
+        textStyle = textStyle.copy(color = PetbulanceTheme.colorScheme.text.primary),
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        cursorBrush = SolidColor(PetbulanceTheme.colorScheme.commonText),
+        cursorBrush = SolidColor(PetbulanceTheme.colorScheme.text.primary),
         decorationBox = { innerTextField ->
             Row(
                 modifier = Modifier.fillMaxWidth().height(24.dp),
@@ -72,7 +72,7 @@ fun BasicInputTextField(
                     if (value.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = textStyle.copy(color = PetbulanceTheme.colorScheme.descriptionText)
+                            style = textStyle.copy(color = PetbulanceTheme.colorScheme.text.caption)
                         )
                     }
                     innerTextField()
@@ -80,7 +80,7 @@ fun BasicInputTextField(
                 Icon(
                     Icons.Default.Clear,
                     contentDescription = "Clear all",
-                    tint = PetbulanceTheme.colorScheme.iconTint,
+                    tint = PetbulanceTheme.colorScheme.icon.basic,
                     modifier = Modifier
                         .size(16.dp)
                         .clickable {
