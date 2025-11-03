@@ -22,16 +22,17 @@ jobs:
         with:
           node-version: '18'
 
-      # 3. Style Dictionary 설치 (package.json이 없다고 가정)
-      - name: Install Style Dictionary
-        run: npm install -g style-dictionary
-
-      # 4. Style Dictionary 실행 (토큰 변환)
-      - name: Build Design Tokens
-        run: style-dictionary build
-
-      - name: Get Current Date (KST)
-        run: echo "TODAY=$(TZ='Asia/Seoul' date +'%Y-%m-%d')" >> $GITHUB_ENV
+#      .. Unused
+#      # 3. Style Dictionary 설치 (package.json이 없다고 가정)
+#      - name: Install Style Dictionary
+#        run: npm install -g style-dictionary
+#
+#      # 4. Style Dictionary 실행 (토큰 변환)
+#      - name: Build Design Tokens
+#        run: style-dictionary build
+#
+#      - name: Get Current Date (KST)
+#        run: echo "TODAY=$(TZ='Asia/Seoul' date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       # 5. 변경 사항을 PR로 생성
       - name: Create Pull Request
