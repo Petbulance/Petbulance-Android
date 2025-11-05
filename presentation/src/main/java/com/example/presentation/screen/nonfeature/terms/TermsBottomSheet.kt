@@ -165,7 +165,7 @@ private fun TermsBottomSheetContents(
                 BasicButton(
                     text = "동의하기",
                     type = ButtonType.SECONDARY,
-                    onClicked = { onTermsAgree() },
+                    onClicked = { },
                     modifier = Modifier.padding(top = 20.dp)
                 )
             } else {

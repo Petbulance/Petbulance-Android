@@ -56,25 +56,25 @@ public object PetbulancePrimitives {
   }
 
   public object Secondary {
-    public val p50: Color = Color(0XFFFEFEF6)
+    public val p50: Color = Color(0XFFE8EBED)
 
-    public val p100: Color = Color(0XFFFDFCE7)
+    public val p100: Color = Color(0XFFB9C0C7)
 
-    public val p200: Color = Color(0XFFFBF9D0)
+    public val p200: Color = Color(0XFF97A1AC)
 
-    public val p300: Color = Color(0XFFFAF5B8)
+    public val p300: Color = Color(0XFF677686)
 
-    public val p400: Color = Color(0XFFF8F2A0)
+    public val p400: Color = Color(0XFF495C6F)
 
-    public val p500: Color = Color(0XFFF6EF89)
+    public val p500: Color = Color(0XFF1C334B)
 
-    public val p600: Color = Color(0XFFF1E541)
+    public val p600: Color = Color(0XFF192E44)
 
-    public val p700: Color = Color(0XFFD5C910)
+    public val p700: Color = Color(0XFF142435)
 
-    public val p800: Color = Color(0XFF8E860B)
+    public val p800: Color = Color(0XFF0F1C29)
 
-    public val p900: Color = Color(0XFF474305)
+    public val p900: Color = Color(0XFF0C1520)
   }
 
   public object Tertiary {
@@ -100,25 +100,25 @@ public object PetbulancePrimitives {
   }
 
   public object Quaternary {
-    public val p50: Color = Color(0XFFE8EBED)
+    public val p50: Color = Color(0XFFFEFEF6)
 
-    public val p100: Color = Color(0XFFB9C0C7)
+    public val p100: Color = Color(0XFFFDFCE7)
 
-    public val p200: Color = Color(0XFF97A1AC)
+    public val p200: Color = Color(0XFFFBF9D0)
 
-    public val p300: Color = Color(0XFF677686)
+    public val p300: Color = Color(0XFFFAF5B8)
 
-    public val p400: Color = Color(0XFF495C6F)
+    public val p400: Color = Color(0XFFF8F2A0)
 
-    public val p500: Color = Color(0XFF1C334B)
+    public val p500: Color = Color(0XFFF6EF89)
 
-    public val p600: Color = Color(0XFF192E44)
+    public val p600: Color = Color(0XFFF1E541)
 
-    public val p700: Color = Color(0XFF142435)
+    public val p700: Color = Color(0XFFD5C910)
 
-    public val p800: Color = Color(0XFF0F1C29)
+    public val p800: Color = Color(0XFF8E860B)
 
-    public val p900: Color = Color(0XFF0C1520)
+    public val p900: Color = Color(0XFF474305)
   }
 
   public object Positive {

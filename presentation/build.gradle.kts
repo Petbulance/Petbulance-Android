@@ -147,7 +147,6 @@ dependencies {
     generateTokensClasspath("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:$kotlinVersion")
     generateTokensClasspath("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:$kotlinVersion")
 
-    // (스크립트가 사용할 라이브러리 - 유지)
     generateTokensClasspath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     generateTokensClasspath("com.squareup:kotlinpoet:1.16.0")
 
@@ -158,7 +157,6 @@ tasks.register<JavaExec>("generateDesignTokens") {
     group = "petbulance"
     description = "Generates Primitives.kt from tokens.json using kts script."
 
-    // --- 입력/출력 (기존과 동일) ---
     val scriptFile = project.rootProject.file("tokens/generateColors.kts")
     val tokenFile = project.rootProject.file("tokens/tokens.json")
     inputs.file(scriptFile)
