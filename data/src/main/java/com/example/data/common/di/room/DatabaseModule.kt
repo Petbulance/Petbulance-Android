@@ -3,6 +3,7 @@ package com.example.data.common.di.room
 import android.content.Context
 import androidx.room.Room
 import com.example.data.remote.local.database.example.dao.ExampleDao
+import com.example.data.remote.local.database.nonfeature.terms.TermDetailsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +29,11 @@ object DatabaseModule {
     @Provides
     fun provideExampleDao(database: AppDatabase): ExampleDao {
         return database.exampleDao()
+    }
+
+    @Provides
+    fun provideTermDetailsDao(database: AppDatabase): TermDetailsDao {
+        return database.termDetailsDao()
     }
 
 }

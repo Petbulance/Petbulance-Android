@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
@@ -26,12 +27,12 @@ fun BasicButton(
     val buttonColor = when (type) {
         ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.action.primary.default
         ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.action.primary.disabled
-        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.action.primary.disabled
+        ButtonType.DEFAULT -> Color.Transparent
     }
 
     val textColor = when (type) {
         ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.text.inverse
-        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.text.caption
+        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.text.disabled
         ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.text.caption
     }
 
@@ -45,8 +46,8 @@ fun BasicButton(
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.bodyLarge.emp(),
-            modifier = Modifier.padding(10.dp)
+            style = MaterialTheme.typography.titleMedium.emp(),
+            modifier = Modifier.padding(16.dp)
         )
     }
 }

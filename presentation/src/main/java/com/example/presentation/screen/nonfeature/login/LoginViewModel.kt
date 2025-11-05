@@ -1,8 +1,8 @@
 package com.example.presentation.screen.nonfeature.login
 
 import android.util.Log
-import com.example.domain.model.nonfeature.login.UserInfo
 import com.example.domain.model.nonfeature.login.LoginProviderType
+import com.example.domain.model.nonfeature.login.UserInfo
 import com.example.domain.usecase.nonfeature.login.RequestTokenToServerUseCase
 import com.example.domain.usecase.nonfeature.login.SaveTokensUseCaseUseCase
 import com.example.domain.utils.login.DomainLoginRequest
@@ -57,8 +57,14 @@ class LoginViewModel @Inject constructor(
                 .build()
             requestTokenToServerUseCase(domainLoginRequest)
         }.onSuccess { userInfo ->
-            saveToken(userInfo.getOrThrow())
-            _eventFlow.emit(LoginEvent.Login.Success)
+            val user = userInfo.getOrThrow()
+            saveToken(user)
+            if (user.isNewUser) {
+                _eventFlow.emit(LoginEvent.Login.Success.New)
+            } else {
+                _eventFlow.emit(LoginEvent.Login.Success.Existing)
+            }
+
         }.onFailure { exception ->
             _eventFlow.emit(
                 LoginEvent.Login.Error(

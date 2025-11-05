@@ -5,6 +5,7 @@ import com.example.data.remote.network.nonfeature.terms.model.response.TermDetai
 import com.example.data.remote.network.nonfeature.terms.model.response.TermResponse
 import com.example.data.remote.network.nonfeature.terms.model.response.TermsStatusResponse
 import com.example.data.utils.BASE_URL
+import com.example.data.utils.BaseResponse
 import com.example.data.utils.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -22,19 +23,19 @@ class TermsApi @Inject constructor(
 
     suspend fun getLatestTermsAgreementStatus(): Result<TermsStatusResponse> {
         return safeApiCall {
-            client.get("$baseUrl/status").body<TermsStatusResponse>()
+            client.get("$baseUrl/status").body<BaseResponse<TermsStatusResponse>>()
         }
     }
 
     suspend fun getTerms(): Result<List<TermResponse>> {
         return safeApiCall {
-            client.get(baseUrl).body<List<TermResponse>>()
+            client.get(baseUrl).body<BaseResponse<List<TermResponse>>>()
         }
     }
 
     suspend fun getTermDetails(termsId: String): Result<TermDetailsResponse> {
         return safeApiCall {
-            client.get("$baseUrl/$termsId").body<TermDetailsResponse>()
+            client.get("$baseUrl/$termsId").body<BaseResponse<TermDetailsResponse>>()
         }
     }
 
@@ -43,7 +44,7 @@ class TermsApi @Inject constructor(
             client.post("$baseUrl/consents") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
-            }.body<Unit>()
+            }.body<BaseResponse<Unit>>()
         }
     }
 }

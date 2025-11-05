@@ -1,4 +1,4 @@
-package com.example.data.remote.network.nonfeature.users.model.request
+package com.example.data.remote.network.nonfeature.login.model.request
 
 import com.example.domain.utils.login.DomainLoginRequest
 import kotlinx.serialization.Serializable

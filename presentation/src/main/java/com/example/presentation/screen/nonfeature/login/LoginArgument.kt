@@ -28,7 +28,10 @@ sealed class LoginEvent {
     }
 
     sealed class Login : LoginEvent() {
-        data object Success : Login()
+        sealed class Success : Login() {
+            data object Existing: Success()
+            data object New: Success()
+        }
         data class Error(
             override val userMessage: String = "문제가 발생했습니다.",
             override val exceptionMessage: String?

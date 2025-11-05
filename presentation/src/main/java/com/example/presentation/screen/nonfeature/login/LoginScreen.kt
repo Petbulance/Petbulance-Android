@@ -74,15 +74,18 @@ fun LoginScreen(
     LaunchedEffect(argument.event) {
         argument.event.collect { event ->
             when (event) {
-                is LoginEvent.Login.Success -> {
-                    /* TODO : navigate to next screen */
+                is LoginEvent.Login.Success.New -> {
+                    navController.safeNavigate(ScreenDestinations.Welcome.route)
+                }
+
+                is LoginEvent.Login.Success.Existing -> {
+                    navController.safeNavigate(ScreenDestinations.Home.route)
                 }
 
                 else -> {}
             }
         }
     }
-
 
     Scaffold { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {

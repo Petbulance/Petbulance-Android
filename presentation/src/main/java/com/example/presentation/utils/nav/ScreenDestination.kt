@@ -4,9 +4,8 @@ sealed class ScreenDestinations(val route: String) {
 
     data object Splash: ScreenDestinations("splash")
     data object Login: ScreenDestinations("login")
+    data object Welcome: ScreenDestinations("welcome")
 
-    data object Home : ScreenDestinations("home") {
-        data object Test : ScreenDestinations("home/test")
-    }
+    data object Home : ScreenDestinations("home")
 
 }

@@ -1,5 +1,6 @@
 package com.example.presentation.screen.nonfeature.terms
 
+import android.util.Log
 import com.example.domain.model.nonfeature.terms.Consent
 import com.example.domain.model.nonfeature.terms.Term
 import com.example.domain.model.nonfeature.terms.TermConsent
@@ -40,6 +41,9 @@ class TermsViewModel @Inject constructor(
     val termDetails: StateFlow<List<TermDetails>> = _termDetails
 
     private val _consents = MutableStateFlow<List<Consent>>(emptyList())
+
+    private val _isAllRequiredTermsAgreed = MutableStateFlow(false)
+    val isAllRequiredTermsAgreed: StateFlow<Boolean> = _isAllRequiredTermsAgreed
 
     fun onIntent(intent: TermsIntent) {
         when (intent) {
@@ -126,6 +130,7 @@ class TermsViewModel @Inject constructor(
                     )
                 } else consent
             }
+            validateAllRequiredConsents()
         }.onFailure { ex ->
             _eventFlow.emit(
                 TermsEvent.DataFetch.Error(
@@ -160,8 +165,11 @@ class TermsViewModel @Inject constructor(
         val consentMap = _consents.value.associateBy { it.termId }
         val notAgreed = requiredIds.any { id -> consentMap[id]?.agreed != true }
         if (notAgreed) {
-            throw IllegalStateException("필수 약관이 모두 체크되지 않았습니다.")
+            Log.d("siria22", "전부 동의되지 않음 어쩌고")
+            _isAllRequiredTermsAgreed.value = false
+            return
         }
+        _isAllRequiredTermsAgreed.value = true
     }
 
 }

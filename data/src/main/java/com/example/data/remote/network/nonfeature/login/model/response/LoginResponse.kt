@@ -1,4 +1,4 @@
-package com.example.data.remote.network.nonfeature.users.model.response
+package com.example.data.remote.network.nonfeature.login.model.response
 
 import kotlinx.serialization.Serializable
 

@@ -9,11 +9,11 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ApiErrorResponse(
+data class BaseResponse<T>(
     val status: Int,
     val timestamp: String,
     val success: Boolean,
-    val data: ErrorData
+    val data: T
 )
 
 @Serializable
@@ -29,9 +29,15 @@ data class ErrorData(
  * @param apiCall 실제 Ktor API를 호출하는 suspend 람다
  * @return API 호출 결과를 담은 Result<T> 객체.
  */
-suspend fun <T> safeApiCall(apiCall: suspend () -> T): Result<T> {
+suspend fun <T> safeApiCall(apiCall: suspend () -> BaseResponse<T>): Result<T> {
     return try {
-        Result.success(apiCall())
+        val response = apiCall()
+        if (response.success) {
+            response.data?.let { Result.success(it) }
+                ?: Result.failure(Exception("Data is null"))
+        } else {
+            Result.failure(ServerApiException("API call failed with success=false"))
+        }
     } catch (e: ClientRequestException) {
         Result.failure(parseErrorResponse(e.response))
     } catch (e: ServerResponseException) {
@@ -43,13 +49,15 @@ suspend fun <T> safeApiCall(apiCall: suspend () -> T): Result<T> {
 
 private suspend fun parseErrorResponse(response: HttpResponse): ServerApiException {
     return try {
-        val errorResponse = response.body<ApiErrorResponse>()
-        Log.e("petbulance", "ApiErrorResponse : \n$ApiErrorResponse")
-        ServerApiException(
-            message = errorResponse.data.message,
-            errorCode = errorResponse.data.errorClassName
-        )
+        val errorResponse = response.body<BaseResponse<ErrorData>>()
+        Log.e("petbulance", "ApiErrorResponse : \n$errorResponse")
+        errorResponse.data.let {
+            ServerApiException(
+                message = it.message,
+                errorCode = it.errorClassName
+            )
+        }
     } catch (e: Exception) {
-        ServerApiException("An unexpected error occurred")
+        ServerApiException("An unexpected error occurred: ${e.message}")
     }
 }

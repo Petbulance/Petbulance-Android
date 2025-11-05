@@ -7,10 +7,12 @@ import kotlin.time.ExperimentalTime
 
 data class TermsData(
     val termList: List<Term>,
-    val termDetails: List<TermDetails>
+    val termDetails: List<TermDetails>,
+    val isAllRequiredTermsAgreed: Boolean
 ) {
     companion object {
-        fun empty() = TermsData(termList = emptyList(), termDetails = emptyList())
+        fun empty() = TermsData(termList = emptyList(), termDetails = emptyList(),
+            false)
     }
 }
 

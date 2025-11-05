@@ -1,7 +1,7 @@
 package com.example.data.repository.nonfeature.login
 
-import com.example.data.remote.network.nonfeature.users.LoginApi
-import com.example.data.remote.network.nonfeature.users.model.request.toData
+import com.example.data.remote.network.nonfeature.login.LoginApi
+import com.example.data.remote.network.nonfeature.login.model.request.toData
 import com.example.domain.model.nonfeature.login.UserInfo
 import com.example.domain.repository.nonfeature.login.LoginRepository
 import com.example.domain.utils.login.DomainLoginRequest

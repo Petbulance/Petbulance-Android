@@ -1,12 +1,10 @@
 package com.example.presentation.screen.nonfeature.terms
 
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -29,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +43,6 @@ import com.example.presentation.component.ui.atom.BasicButton
 import com.example.presentation.component.ui.atom.ButtonType
 import com.example.presentation.utils.error.ErrorDialog
 import com.example.presentation.utils.error.ErrorDialogState
-import kotlinx.coroutines.CoroutineScope
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,55 +59,66 @@ fun TermsBottomSheet(
     val termDetails = data.termDetails
     val termUiModelList = termList.map { it.toUiModel() }
 
+    val isAllRequiredTermsAgreed = data.isAllRequiredTermsAgreed
+
     LaunchedEffect(argument.event) {
         argument.event.collect { event ->
             when (event) {
                 else -> {}
             }
+
+            when (event) {
+                is TermsEvent.Agreement.Success -> {
+                    onDismissRequest()
+                }
+
+                else -> {}
+            }
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
+
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onDismissRequest,
+        containerColor = PetbulanceTheme.colorScheme.bg.default,
+        scrimColor = Color.Black.copy(alpha = 0.5f)
     ) {
-        ModalBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = onDismissRequest,
-        ) {
-            TermsBottomSheetContents(
-                termList = termUiModelList,
-                termDetails = termDetails,
-                onTermCheckedChange = { termId, isChecked ->
-                    argument.intent(TermsIntent.OnTermCheckedChange(termId, isChecked))
-                },
-                onTermsAgree = {
-                    argument.intent(TermsIntent.OnAgreementButtonClicked)
-                }
-            )
-        }
-
-        if (errorDialogState.isErrorDialogVisible) {
-            ErrorDialog(
-                errorDialogState = errorDialogState,
-                errorHandler = {
-                    errorDialogState = errorDialogState.toggleVisibility()
-                }
-            )
-        }
+        TermsBottomSheetContents(
+            termList = termUiModelList,
+            termDetails = termDetails,
+            isAllRequiredTermsAgreed = isAllRequiredTermsAgreed,
+            onTermCheckedChange = { termId, isChecked ->
+                argument.intent(TermsIntent.OnTermCheckedChange(termId, isChecked))
+            },
+            onTermsAgree = {
+                argument.intent(TermsIntent.OnAgreementButtonClicked)
+            },
+            onDismissRequest = onDismissRequest
+        )
     }
 
-    // BackHandler { /* TODO : BackHandler? */ }
+    if (errorDialogState.isErrorDialogVisible) {
+        ErrorDialog(
+            errorDialogState = errorDialogState,
+            errorHandler = {
+                errorDialogState = errorDialogState.toggleVisibility()
+            }
+        )
+    }
+
+    BackHandler { onDismissRequest() }
 }
 
 @Composable
 private fun TermsBottomSheetContents(
     termList: List<TermUiModel>,
     termDetails: List<TermDetails>,
+    isAllRequiredTermsAgreed: Boolean,
     onTermCheckedChange: (String, Boolean) -> Unit,
     onTermsAgree: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
-    val expandedState = remember { mutableStateOf(setOf("1")) }
+    val expandedState = remember { mutableStateOf(setOf("")) }
 
     LazyColumn(
         modifier = Modifier
@@ -154,16 +161,25 @@ private fun TermsBottomSheetContents(
             }
         }
         item {
-            BasicButton(
-                text = "동의하기",
-                type = ButtonType.PRIMARY,
-                onClicked = { onTermsAgree() },
-                modifier = Modifier.padding(top = 20.dp)
-            )
+            if (!isAllRequiredTermsAgreed) {
+                BasicButton(
+                    text = "동의하기",
+                    type = ButtonType.SECONDARY,
+                    onClicked = { onTermsAgree() },
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+            } else {
+                BasicButton(
+                    text = "동의하기",
+                    type = ButtonType.PRIMARY,
+                    onClicked = { onTermsAgree() },
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+            }
             BasicButton(
                 text = "닫기",
                 type = ButtonType.DEFAULT,
-                onClicked = { onTermsAgree() },
+                onClicked = { onDismissRequest() },
                 modifier = Modifier.padding(top = 12.dp)
             )
         }
@@ -215,7 +231,7 @@ private fun TermHeader(
             contentDescription = "Toggle term detail",
             tint = PetbulanceTheme.colorScheme.text.tertiary,
             modifier = Modifier
-                .size(16.dp)
+                .size(24.dp)
                 .clickable { onExpandToggle() }
         )
     }
@@ -286,8 +302,10 @@ private fun TermsBottomSheetScreenPreview() {
         TermsBottomSheetContents(
             termList = termList.map { it.toUiModel() },
             termDetails = termDetails,
+            isAllRequiredTermsAgreed = false,
             onTermCheckedChange = { _, _ -> },
-            onTermsAgree = {}
+            onTermsAgree = {},
+            onDismissRequest = {}
         )
     }
 }
