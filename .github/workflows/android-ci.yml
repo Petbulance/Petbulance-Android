@@ -24,6 +24,24 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Inject secrets
+        env:
+          WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          KAKAO_NATIVE_APP_KEY: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+        run: |
+          echo "WEB_CLIENT_ID=${WEB_CLIENT_ID}" >> local.properties
+          echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}" >> local.properties
+          echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}" >> local.properties
+          echo "KAKAO_NATIVE_APP_KEY=${KAKAO_NATIVE_APP_KEY}" >> local.properties
+
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GCP_SERVICES_JSON }}
+        run: |
+          echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+
       # Lint 실행 (정적 분석)
       - name: Run Lint
         run: ./gradlew lintDebug
