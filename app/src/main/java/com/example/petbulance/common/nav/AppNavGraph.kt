@@ -5,6 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.screen.feature.home.homeDestination
+import com.example.presentation.screen.nonfeature.login.loginDestination
+import com.example.presentation.screen.nonfeature.splash.splashDestination
+import com.example.presentation.screen.nonfeature.welcome.welcomeDestination
 import com.example.presentation.utils.nav.ScreenDestinations
 
 @Composable
@@ -14,9 +17,15 @@ fun AppNavGraph(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ScreenDestinations.Home.route,
+        startDestination = ScreenDestinations.Welcome.route,
         modifier = modifier
     ) {
+        // Non-feature
+        splashDestination(navController = navController)
+        loginDestination(navController = navController)
+        welcomeDestination(navController = navController)
+
+        // Feature
         homeDestination(navController = navController)
     }
 }

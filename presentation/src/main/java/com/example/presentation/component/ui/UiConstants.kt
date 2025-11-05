@@ -21,5 +21,5 @@ fun Space16() {
 
 // RoundedCornerShape
 val SmallRoundedCorner = RoundedCornerShape(4.dp)
-val DefaultRoundedCorner = RoundedCornerShape(8.dp)
+val DefaultRoundedCorner = RoundedCornerShape(12.dp)
 val LargeRoundedCorner = RoundedCornerShape(16.dp)

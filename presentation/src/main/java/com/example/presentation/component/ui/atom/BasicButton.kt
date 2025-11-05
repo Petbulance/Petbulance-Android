@@ -10,10 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.theme.emp
+import com.example.presentation.component.ui.DefaultRoundedCorner
 
 @Composable
 fun BasicButton(
@@ -24,28 +26,28 @@ fun BasicButton(
 ) {
     val buttonColor = when (type) {
         ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.action.primary.default
-        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.action.link.default
-        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.action.primary.default
+        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.action.primary.disabled
+        ButtonType.DEFAULT -> Color.Transparent
     }
 
     val textColor = when (type) {
-        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.text.primary
-        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.text.primary
-        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.text.primary
+        ButtonType.PRIMARY -> PetbulanceTheme.colorScheme.text.inverse
+        ButtonType.SECONDARY -> PetbulanceTheme.colorScheme.text.disabled
+        ButtonType.DEFAULT -> PetbulanceTheme.colorScheme.text.caption
     }
 
     Box(
         modifier = modifier
             .clickable { onClicked() }
-            .background(buttonColor)
+            .background(buttonColor, DefaultRoundedCorner)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.padding(vertical = 8.dp)
+            style = MaterialTheme.typography.titleMedium.emp(),
+            modifier = Modifier.padding(16.dp)
         )
     }
 }

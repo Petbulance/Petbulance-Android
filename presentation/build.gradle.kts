@@ -1,4 +1,6 @@
 import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.library")
@@ -8,7 +10,18 @@ plugins {
     alias(libs.plugins.devtoolsKsp)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace = "com.example.presentation"
     compileSdk = 36
 
@@ -17,6 +30,27 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"${localProperties["WEB_CLIENT_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "NAVER_CLIENT_ID",
+            "\"${localProperties["NAVER_CLIENT_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "NAVER_CLIENT_SECRET",
+            "\"${localProperties["NAVER_CLIENT_SECRET"]}\""
+        )
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            "\"${localProperties["KAKAO_NATIVE_APP_KEY"]}\""
+        )
     }
 
     buildTypes {
@@ -92,6 +126,11 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    // Login
+    implementation(libs.kakao.login)
+    implementation(libs.naver.login)
+    implementation(libs.googleid)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -108,7 +147,6 @@ dependencies {
     generateTokensClasspath("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:$kotlinVersion")
     generateTokensClasspath("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin-embeddable:$kotlinVersion")
 
-    // (스크립트가 사용할 라이브러리 - 유지)
     generateTokensClasspath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     generateTokensClasspath("com.squareup:kotlinpoet:1.16.0")
 
@@ -119,7 +157,6 @@ tasks.register<JavaExec>("generateDesignTokens") {
     group = "petbulance"
     description = "Generates Primitives.kt from tokens.json using kts script."
 
-    // --- 입력/출력 (기존과 동일) ---
     val scriptFile = project.rootProject.file("tokens/generateColors.kts")
     val tokenFile = project.rootProject.file("tokens/tokens.json")
     inputs.file(scriptFile)
