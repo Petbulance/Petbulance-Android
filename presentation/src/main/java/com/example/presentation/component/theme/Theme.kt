@@ -48,7 +48,7 @@ fun PetbulanceTheme(
     CompositionLocalProvider(LocalPetbulanceColorScheme provides customColorScheme) {
         MaterialTheme(
             colorScheme = materialColorScheme,
-            typography = NanumTypography,
+            typography = PretendardTypography,
             content = content
         )
     }
