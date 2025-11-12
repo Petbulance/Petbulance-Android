@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.screen.feature.home.homeDestination
+import com.example.presentation.screen.feature.mypage.myPageDestination
 import com.example.presentation.screen.nonfeature.login.loginDestination
 import com.example.presentation.screen.nonfeature.splash.splashDestination
 import com.example.presentation.screen.nonfeature.welcome.welcomeDestination
@@ -27,5 +28,9 @@ fun AppNavGraph(modifier: Modifier = Modifier) {
 
         // Feature
         homeDestination(navController = navController)
+
+
+
+        myPageDestination(navController = navController)
     }
 }

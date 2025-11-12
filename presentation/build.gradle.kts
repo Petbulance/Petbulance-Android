@@ -66,6 +66,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+    }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
@@ -173,14 +176,10 @@ tasks.register<JavaExec>("generateDesignTokens") {
     mainClass.set("org.jetbrains.kotlin.cli.jvm.K2JVMCompiler")
     classpath = generateTokensClasspath
 
-    // 🚨 2. (핵심 수정)
-    // args 리스트를 만들기 *전에* 플러그인 JAR 경로를 찾습니다.
-    // (이 코드는 'configuration time' 경고를 발생시키지만, 지금은 유일한 해결책입니다.)
     val serializationPluginJar = generateTokensClasspath.files.first {
         it.name.startsWith("kotlin-serialization-compiler-plugin-embeddable")
     }.absolutePath
 
-    // 6. 실행기가 스크립트를 컴파일하기 위한 인자
     args = listOf(
         "-no-stdlib",
         "-no-reflect",
@@ -193,11 +192,9 @@ tasks.register<JavaExec>("generateDesignTokens") {
         tokenFile.absolutePath
     )
 
-    // 7. (권장) 인코딩 문제 방지
     jvmArgs = listOf("-Dfile.encoding=UTF-8")
 }
 
-// 8. (필수) 빌드 파이프라인에 태스크 연결
 tasks.named("preBuild") {
     dependsOn(tasks.named("generateDesignTokens"))
 }

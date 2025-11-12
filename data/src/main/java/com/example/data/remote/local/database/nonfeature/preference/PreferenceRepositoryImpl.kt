@@ -1,6 +1,6 @@
 package com.example.data.remote.local.database.nonfeature.preference
 
-import com.example.domain.usecase.nonfeature.preference.PreferenceRepository
+import com.example.domain.repository.nonfeature.preference.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class PreferenceRepositoryImpl @Inject constructor(
         return provider.observeTheme().map { Result.success(it) }
     }
 
-    override suspend fun updateTheme(theme: String): Result<Unit> = runCatching {
-        provider.updateTheme(theme)
+    override suspend fun updateTheme(theme: String): Result<Unit> {
+        return runCatching { provider.updateTheme(theme) }
     }
 }

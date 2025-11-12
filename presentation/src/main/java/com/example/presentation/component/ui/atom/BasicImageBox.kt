@@ -1,26 +1,21 @@
 package com.example.presentation.component.ui.atom
 
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.presentation.R
 
@@ -37,52 +32,12 @@ fun BasicImageBox(
     modifier: Modifier = Modifier,
     size: Dp = 128.dp,
     galleryUri: Uri?,
+    errorImageResource: Int = R.drawable.broken_image,
+    placeholderImageResource: Int = R.drawable.broken_image /* TODO : placeholder 이미지 */
 ) {
-    var isLoading by remember { mutableStateOf(true) }
+    val isUriValid = galleryUri != null && galleryUri.toString().isNotBlank()
 
-    Box(
-        modifier = modifier.size(size),
-        contentAlignment = Alignment.Center
-    ) {
-        if (galleryUri == null) {
-            isLoading = false
-            Box(
-                modifier = modifier
-                    .background(Color.Gray)
-                    .clip(RoundedCornerShape(4.dp))
-            )
-        } else {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(galleryUri)
-                    .crossfade(true)
-                    .listener(
-                        onSuccess = { _, _ -> isLoading = false },
-                        onError = { _, _ -> isLoading = false }
-                    )
-                    .error(R.drawable.broken_image)
-                    .build(),
-                modifier = Modifier
-                    .matchParentSize()
-                    .clip(RoundedCornerShape(4.dp)),
-                contentDescription = "이미지 콘텐츠",
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        if (isLoading) {
-            CircularProgressIndicator()
-        }
-    }
-}
-
-@Composable
-fun BasicImageBox(
-    modifier: Modifier = Modifier,
-    size: Dp = 128.dp,
-    painterResource: Painter,
-) {
-    var isLoading by remember { mutableStateOf(true) }
+    val dataToLoad = if (isUriValid) galleryUri else null
 
     Box(
         modifier = modifier.size(size),
@@ -90,22 +45,54 @@ fun BasicImageBox(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(painterResource)
+                .data(dataToLoad)
                 .crossfade(true)
-                .listener(
-                    onSuccess = { _, _ -> isLoading = false },
-                    onError = { _, _ -> isLoading = false }
-                )
-                .error(R.drawable.broken_image)
+                .error(errorImageResource)
+                .placeholder(placeholderImageResource)
                 .build(),
             modifier = Modifier
                 .matchParentSize()
                 .clip(RoundedCornerShape(4.dp)),
             contentDescription = "이미지 콘텐츠",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
-        if (isLoading) {
+        val state = rememberAsyncImagePainter(model = dataToLoad).state
+        if (state is AsyncImagePainter.State.Loading) {
+            CircularProgressIndicator()
+        }
+
+    }
+}
+
+@Composable
+fun BasicImageBox(
+    modifier: Modifier = Modifier,
+    size: Dp = 128.dp,
+    imageResource: Int,
+    errorImageResource: Int = R.drawable.broken_image,
+    placeholderImageResource: Int = R.drawable.broken_image
+) {
+    Box(
+        modifier = modifier.size(size),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageResource)
+                .crossfade(true)
+                .error(errorImageResource)
+                .placeholder(placeholderImageResource)
+                .build(),
+            modifier = Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(4.dp)),
+            contentDescription = "이미지 콘텐츠",
+            contentScale = ContentScale.Crop,
+        )
+
+        val state = rememberAsyncImagePainter(model = imageResource).state
+        if (state is AsyncImagePainter.State.Loading) {
             CircularProgressIndicator()
         }
     }

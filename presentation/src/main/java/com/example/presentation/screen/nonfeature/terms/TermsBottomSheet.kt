@@ -39,8 +39,8 @@ import com.example.domain.model.nonfeature.terms.Term
 import com.example.domain.model.nonfeature.terms.TermDetails
 import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
-import com.example.presentation.component.ui.atom.BasicButton
-import com.example.presentation.component.ui.atom.ButtonType
+import com.example.presentation.component.ui.atom.DefaultButton
+import com.example.presentation.component.ui.atom.DefaultButtonType
 import com.example.presentation.utils.error.ErrorDialog
 import com.example.presentation.utils.error.ErrorDialogState
 import java.time.Instant
@@ -80,7 +80,7 @@ fun TermsBottomSheet(
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        containerColor = PetbulanceTheme.colorScheme.bg.default,
+        containerColor = Color.White,
         scrimColor = Color.Black.copy(alpha = 0.5f)
     ) {
         TermsBottomSheetContents(
@@ -162,23 +162,23 @@ private fun TermsBottomSheetContents(
         }
         item {
             if (!isAllRequiredTermsAgreed) {
-                BasicButton(
+                DefaultButton(
                     text = "동의하기",
-                    type = ButtonType.SECONDARY,
+                    type = DefaultButtonType.SECONDARY,
                     onClicked = { },
                     modifier = Modifier.padding(top = 20.dp)
                 )
             } else {
-                BasicButton(
+                DefaultButton(
                     text = "동의하기",
-                    type = ButtonType.PRIMARY,
+                    type = DefaultButtonType.PRIMARY,
                     onClicked = { onTermsAgree() },
                     modifier = Modifier.padding(top = 20.dp)
                 )
             }
-            BasicButton(
+            DefaultButton(
                 text = "닫기",
-                type = ButtonType.DEFAULT,
+                type = DefaultButtonType.DEFAULT,
                 onClicked = { onDismissRequest() },
                 modifier = Modifier.padding(top = 12.dp)
             )

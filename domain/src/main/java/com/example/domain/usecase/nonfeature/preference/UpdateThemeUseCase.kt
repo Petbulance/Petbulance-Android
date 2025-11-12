@@ -1,7 +1,7 @@
-package com.example.domain.repository.nonfeature.preference
+package com.example.domain.usecase.nonfeature.preference
 
 import com.example.domain.model.type.AppTheme
-import com.example.domain.usecase.nonfeature.preference.PreferenceRepository
+import com.example.domain.repository.nonfeature.preference.PreferenceRepository
 import javax.inject.Inject
 
 class UpdateThemeUseCase @Inject constructor(

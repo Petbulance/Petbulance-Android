@@ -1,5 +1,6 @@
 package com.example.data.remote.network.feature.users
 
+import com.example.data.remote.network.feature.users.model.GetUserProfileResponse
 import com.example.data.remote.network.feature.users.model.RequestTemporaryNicknameResponse
 import com.example.data.remote.network.feature.users.model.SaveUserNicknameRequest
 import com.example.data.remote.network.feature.users.model.SaveUserNicknameResponse
@@ -40,6 +41,12 @@ class UserApi @Inject constructor(
             client.get("$baseUrl/nickname") {
                 parameter("nickname", nickname)
             }.body<BaseResponse<ValidateNicknameResponse>>()
+        }
+    }
+
+    suspend fun getUserProfile(): Result<GetUserProfileResponse> {
+        return safeApiCall {
+            client.get("$baseUrl/me").body<BaseResponse<GetUserProfileResponse>>()
         }
     }
 }

@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
 import com.example.presentation.component.ui.Space16
-import com.example.presentation.component.ui.atom.BasicButton
+import com.example.presentation.component.ui.atom.DefaultButton
 import com.example.presentation.component.ui.atom.BasicDialog
-import com.example.presentation.component.ui.atom.ButtonType
+import com.example.presentation.component.ui.atom.DefaultButtonType
 
 @Composable
 fun ErrorDialog(
@@ -40,9 +40,9 @@ fun ErrorDialog(
 
         Space16()
 
-        BasicButton(
+        DefaultButton(
             text = "닫기",
-            type = ButtonType.PRIMARY,
+            type = DefaultButtonType.PRIMARY,
             onClicked = { errorHandler(null) }
         )
     }

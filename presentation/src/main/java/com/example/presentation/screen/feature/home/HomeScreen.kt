@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.component.theme.PetbulanceTheme
-import com.example.presentation.component.ui.organism.AppTopBar
 import com.example.presentation.component.ui.organism.BottomNavigationBar
 import com.example.presentation.component.ui.organism.CurrentBottomNav
-import com.example.presentation.component.ui.organism.TopBarInfo
 import com.example.presentation.utils.error.ErrorDialog
 import com.example.presentation.utils.error.ErrorDialogState
 import com.example.presentation.utils.nav.ScreenDestinations
@@ -53,19 +48,6 @@ fun HomeScreen(
     }
 
     Scaffold(
-        topBar = {
-            AppTopBar(
-                topBarInfo = TopBarInfo(
-                    text = "Home",
-                    isLeadingIconAvailable = false,
-                    onLeadingIconClicked = {},
-                    leadingIconResource = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    isTrailingIconAvailable = false,
-                    onTrailingIconClicked = {},
-                    trailingIconResource = Icons.Filled.MoreVert
-                ),
-            )
-        },
         bottomBar = {
             BottomNavigationBar(
                 selectedItem = CurrentBottomNav.HOME,

@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -35,8 +36,8 @@ import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
 import com.example.presentation.component.theme.emp
 import com.example.presentation.component.ui.Space16
-import com.example.presentation.component.ui.atom.BasicButton
-import com.example.presentation.component.ui.atom.ButtonType
+import com.example.presentation.component.ui.atom.DefaultButton
+import com.example.presentation.component.ui.atom.DefaultButtonType
 import com.example.presentation.screen.nonfeature.terms.TermsArgument
 import com.example.presentation.screen.nonfeature.terms.TermsBottomSheet
 import com.example.presentation.screen.nonfeature.terms.TermsData
@@ -85,7 +86,7 @@ fun WelcomeScreen(
     }
 
     Scaffold(
-        containerColor = PetbulanceTheme.colorScheme.bg.default
+        containerColor = Color.White
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             WelcomeScreenContents(
@@ -147,18 +148,18 @@ private fun WelcomeScreenContents(
         TextContents(tempNickname)
 
         if(isAllRequiredTermsAgreed){
-            BasicButton(
+            DefaultButton(
                 text = "시작하기",
-                type = ButtonType.PRIMARY,
+                type = DefaultButtonType.PRIMARY,
                 onClicked = {
                     onMoveToHomeScreen()
                 },
             )
         }
         else {
-            BasicButton(
+            DefaultButton(
                 text = "약관 동의하기",
-                type = ButtonType.PRIMARY,
+                type = DefaultButtonType.PRIMARY,
                 onClicked = { onTermsBottomSheetCalled() },
             )
         }

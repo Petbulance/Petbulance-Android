@@ -31,9 +31,19 @@ private val LightColorScheme = PetbulanceColorScheme(
 
     // "bg":
     bg = BgColors.create(
-        default = PetbulancePrimitives.Base.white,
-        subtle = PetbulancePrimitives.Gray.p300,
-        overlay = PetbulancePrimitives.Gray.p900
+        frame = FrameBgColors.create(
+            default = PetbulancePrimitives.Base.white,
+            subtle = PetbulancePrimitives.Gray.p100,
+            overlay = PetbulancePrimitives.Gray.p900,
+            medium = PetbulancePrimitives.Gray.p200,
+            strong = PetbulancePrimitives.Gray.p300,
+            verystrong = PetbulancePrimitives.Gray.p400
+        ),
+        icon = IconBgColors.create(
+            hover = PetbulancePrimitives.Gray.p50,
+            focused = PetbulancePrimitives.Gray.p50,
+            pressed = PetbulancePrimitives.Gray.p100
+        )
     ),
 
     // "text":
@@ -99,7 +109,9 @@ private val LightColorScheme = PetbulanceColorScheme(
         active = PetbulancePrimitives.Gray.p900,
         tertiary = PetbulancePrimitives.Gray.p300,
         secondary = PetbulancePrimitives.Gray.p400,
-        white = PetbulancePrimitives.Base.white
+        white = PetbulancePrimitives.Base.white,
+        subtle = PetbulancePrimitives.Gray.p300,
+        verySubtle = PetbulancePrimitives.Gray.p200
     ),
 
     // "icon":
@@ -110,100 +122,18 @@ private val LightColorScheme = PetbulanceColorScheme(
             default = PetbulancePrimitives.Gray.p500
         ),
         // "icon.basic":
-        basic = PetbulancePrimitives.Gray.p600
+        basic = PetbulancePrimitives.Gray.p800,
+        inverse = PetbulancePrimitives.Base.white,
+        disabled = PetbulancePrimitives.Gray.p400,
+        dark = PetbulancePrimitives.Gray.p900,
+        light = PetbulancePrimitives.Gray.p500,
+        medium = PetbulancePrimitives.Gray.p600,
     ),
 
     isDark = false
 )
 
-private val DarkColorPalette = PetbulanceColorScheme(
-    /* TODO : 다크모드 색상 지정 */
-    // "bg":
-    bg = BgColors.create(
-        default = PetbulancePrimitives.Base.white,
-        subtle = PetbulancePrimitives.Gray.p300,
-        overlay = PetbulancePrimitives.Gray.p900
-    ),
-
-    // "text":
-    text = TextColors.create(
-        primary = PetbulancePrimitives.Base.black,
-        secondary = PetbulancePrimitives.Gray.p800,
-        inverse = PetbulancePrimitives.Gray.p100,
-        tertiary = PetbulancePrimitives.Gray.p700,
-        disabled = PetbulancePrimitives.Gray.p400,
-        caption = PetbulancePrimitives.Gray.p500
-    ),
-
-    // "action":
-    action = ActionColors.create(
-        // "action.primary":
-        primary = ActionStateColors.create(
-            default = PetbulancePrimitives.Primary.p500,
-            hover = PetbulancePrimitives.Primary.p600,
-            pressed = PetbulancePrimitives.Primary.p700,
-            disabled = PetbulancePrimitives.Gray.p300,
-            text = PetbulancePrimitives.Base.white
-        ),
-        // "action.link":
-        link = LinkStateColors.create(
-            default = PetbulancePrimitives.Info.p500,
-            hover = PetbulancePrimitives.Info.p600,
-            pressed = PetbulancePrimitives.Info.p700,
-            disabled = PetbulancePrimitives.Gray.p300,
-            visited = PetbulancePrimitives.Info.p900
-        )
-    ),
-
-    // "status":
-    status = StatusColors.create(
-        // "status.success":
-        success = StatusSet.create(
-            default = PetbulancePrimitives.Primary.p500,
-            bg = PetbulancePrimitives.Primary.p100,
-            text = PetbulancePrimitives.Gray.p900
-        ),
-        // "status.error":
-        error = StatusSet.create(
-            default = PetbulancePrimitives.Negative.p500,
-            bg = PetbulancePrimitives.Negative.p100,
-            text = PetbulancePrimitives.Gray.p900
-        ),
-        // "status.warning":
-        warning = StatusSet.create(
-            default = PetbulancePrimitives.Warning.p500,
-            bg = PetbulancePrimitives.Warning.p100,
-            text = PetbulancePrimitives.Gray.p900
-        ),
-        // "status.info":
-        info = StatusSet.create(
-            default = PetbulancePrimitives.Info.p500,
-            bg = PetbulancePrimitives.Info.p100,
-            text = PetbulancePrimitives.Gray.p900
-        )
-    ),
-
-    // "border":
-    border = BorderColors.create(
-        active = PetbulancePrimitives.Gray.p900,
-        tertiary = PetbulancePrimitives.Gray.p300,
-        secondary = PetbulancePrimitives.Gray.p400,
-        white = PetbulancePrimitives.Base.white
-    ),
-
-    // "icon":
-    icon = IconColors.create(
-        // "icon.gnb":
-        gnb = GnbIconColors.create(
-            selected = PetbulancePrimitives.Primary.p500,
-            default = PetbulancePrimitives.Gray.p500
-        ),
-        // "icon.basic":
-        basic = PetbulancePrimitives.Gray.p600
-    ),
-
-    isDark = true,
-)
+private val DarkColorPalette = LightColorScheme
 
 val LocalPetbulanceColorScheme = staticCompositionLocalOf { LightColorScheme }
 
@@ -225,9 +155,15 @@ private fun ColorPalettePreview() {
         val colorScheme = PetbulanceTheme.colorScheme
         val colors = listOf(
             // BgColors
-            "bg.default" to colorScheme.bg.default,
-            "bg.subtle" to colorScheme.bg.subtle,
-            "bg.overlay" to colorScheme.bg.overlay,
+            "bg.frame.default" to colorScheme.bg.frame.default,
+            "bg.frame.subtle" to colorScheme.bg.frame.subtle,
+            "bg.frame.overlay" to colorScheme.bg.frame.overlay,
+            "bg.frame.medium" to colorScheme.bg.frame.medium,
+            "bg.frame.strong" to colorScheme.bg.frame.strong,
+            "bg.frame.verystrong" to colorScheme.bg.frame.verystrong,
+            "bg.icon.hover" to colorScheme.bg.icon.hover,
+            "bg.icon.focused" to colorScheme.bg.icon.focused,
+            "bg.icon.pressed" to colorScheme.bg.icon.pressed,
 
             // TextColors
             "text.primary" to colorScheme.text.primary,
