@@ -1,5 +1,8 @@
 package com.example.presentation.screen.nonfeature.login
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -11,12 +14,30 @@ import com.example.presentation.utils.nav.ScreenDestinations
 fun NavGraphBuilder.loginDestination(navController: NavController) {
     composable(
         route = ScreenDestinations.Login.route,
-//        arguments = listOf(
-//            navArgument(name = "") {
-//                type = NavType.LongType
-//                defaultValue = 0L
-//            }
-//        ) -> if route contains arguments
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 300)
+            )
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 300)
+            )
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { fullWidth -> -fullWidth },
+                animationSpec = tween(durationMillis = 300)
+            )
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(durationMillis = 300)
+            )
+        }
     ) {
         val viewModel: LoginViewModel = hiltViewModel()
 

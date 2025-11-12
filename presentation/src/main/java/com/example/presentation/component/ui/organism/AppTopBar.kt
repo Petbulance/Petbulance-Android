@@ -6,122 +6,114 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.theme.emp
+import com.example.presentation.component.ui.atom.BasicIcon
+import com.example.presentation.component.ui.atom.IconResource
 
 @Composable
 fun AppTopBar(
     modifier: Modifier = Modifier,
     topBarInfo: TopBarInfo,
-    background: Color = PetbulanceTheme.colorScheme.bg.default,
+    background: Color = Color.Transparent,
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
             .background(color = background)
     ) {
-        TopBarLeadingIcon(
-            isLeadingIconAvailable = topBarInfo.isLeadingIconAvailable,
-            onLeadingIconClicked = topBarInfo.onLeadingIconClicked,
-            iconResource = topBarInfo.leadingIconResource,
-            modifier = Modifier.weight(1f)
-        )
-
-        Box(modifier = Modifier.weight(6f)) {
-            Text(
-                text = topBarInfo.text,
-                color = PetbulanceTheme.colorScheme.text.primary,
-                style = MaterialTheme.typography.headlineMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+        if (topBarInfo.isLeadingIconAvailable) {
+            TopBarIcon(
+                iconResource = topBarInfo.leadingIconResource,
+                contentDescription = "Leading icon",
+                onIconClicked = topBarInfo.onLeadingIconClicked,
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 16.dp)
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp)
             )
         }
-        TopBarTrailingIcon(
-            isTrailingIconAvailable = topBarInfo.isTrailingIconAvailable,
-            onTrailingIconClicked = topBarInfo.onTrailingIconClicked,
-            iconResource = topBarInfo.trailingIconResource,
-            modifier = Modifier.weight(1f)
+
+        Text(
+            text = topBarInfo.text,
+            color = PetbulanceTheme.colorScheme.text.primary,
+            style = MaterialTheme.typography.titleMedium.emp(),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .align(
+                    when (topBarInfo.textAlignment) {
+                        TopBarAlignment.CENTER -> Alignment.Center
+                        TopBarAlignment.START -> Alignment.CenterStart
+                    }
+                )
+                .padding(
+                    start = when (topBarInfo.textAlignment) {
+                        TopBarAlignment.CENTER -> 56.dp
+                        TopBarAlignment.START -> 16.dp
+                    },
+                    end = 56.dp * topBarInfo.trailingIcons.size + 16.dp,
+                )
+                .padding(vertical = 8.dp)
         )
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            topBarInfo.trailingIcons.forEach { (icon, onClick) ->
+                TopBarIcon(
+                    iconResource = icon,
+                    contentDescription = "trailing icon : $icon",
+                    onIconClicked = onClick
+                )
+            }
+        }
     }
+}
+
+@Composable
+private fun TopBarIcon(
+    iconResource: IconResource,
+    contentDescription: String,
+    onIconClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BasicIcon(
+        iconResource = iconResource,
+        contentDescription = contentDescription,
+        size = 20.dp,
+        tint = PetbulanceTheme.colorScheme.icon.dark,
+        modifier = modifier.clickable { onIconClicked() }
+    )
+}
+
+enum class TopBarAlignment {
+    START, CENTER
 }
 
 data class TopBarInfo(
     val text: String,
+    val textAlignment: TopBarAlignment = TopBarAlignment.CENTER,
     val isLeadingIconAvailable: Boolean = false,
     val onLeadingIconClicked: () -> Unit = {},
-    val leadingIconResource: ImageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-    val isTrailingIconAvailable: Boolean = false,
-    val onTrailingIconClicked: () -> Unit = {},
-    val trailingIconResource: ImageVector = Icons.Filled.MoreVert
+    val leadingIconResource: IconResource = IconResource.Vector(Icons.AutoMirrored.Filled.KeyboardArrowLeft),
+    val trailingIcons: List<Pair<IconResource, () -> Unit>> = emptyList(),
 )
-
-@Composable
-private fun TopBarLeadingIcon(
-    isLeadingIconAvailable: Boolean,
-    onLeadingIconClicked: () -> Unit,
-    iconResource: ImageVector,
-    modifier: Modifier = Modifier
-) {
-    if (isLeadingIconAvailable) {
-        Icon(
-            imageVector = iconResource,
-            tint = PetbulanceTheme.colorScheme.icon.basic,
-            contentDescription = "Leading Icon",
-            modifier = modifier
-                .clickable { onLeadingIconClicked() }
-                .padding(start = 8.dp)
-                .size(36.dp)
-        )
-    } else {
-        Spacer(modifier = modifier)
-    }
-}
-
-@Composable
-private fun TopBarTrailingIcon(
-    isTrailingIconAvailable: Boolean,
-    onTrailingIconClicked: () -> Unit,
-    iconResource: ImageVector,
-    modifier: Modifier = Modifier
-) {
-    if (isTrailingIconAvailable) {
-        Icon(
-            imageVector = iconResource,
-            tint = PetbulanceTheme.colorScheme.icon.basic,
-            contentDescription = "Trailing Icon",
-            modifier = modifier
-                .clickable { onTrailingIconClicked() }
-                .padding(start = 8.dp)
-                .size(36.dp)
-        )
-    } else {
-        Spacer(modifier = modifier)
-    }
-}
 
 @Preview(apiLevel = 34)
 @Composable
@@ -136,39 +128,40 @@ private fun AppTopBarPreview() {
                 AppTopBar(
                     topBarInfo = TopBarInfo(
                         text = text,
+                        textAlignment = TopBarAlignment.CENTER,
                         isLeadingIconAvailable = true,
                         onLeadingIconClicked = { },
-                        isTrailingIconAvailable = true,
-                        onTrailingIconClicked = {}
+                        trailingIcons = emptyList()
                     ),
                 )
                 AppTopBar(
                     topBarInfo = TopBarInfo(
                         text = text,
+                        textAlignment = TopBarAlignment.CENTER,
                         isLeadingIconAvailable = false,
                         onLeadingIconClicked = { },
-                        isTrailingIconAvailable = true,
-                        onTrailingIconClicked = {}
+                        trailingIcons = emptyList()
                     ),
                 )
                 AppTopBar(
                     topBarInfo = TopBarInfo(
                         text = text,
+                        textAlignment = TopBarAlignment.START,
                         isLeadingIconAvailable = true,
                         onLeadingIconClicked = { },
-                        isTrailingIconAvailable = false,
-                        onTrailingIconClicked = {}
+                        trailingIcons = emptyList()
                     ),
                 )
                 AppTopBar(
                     topBarInfo = TopBarInfo(
                         text = text,
-                        isLeadingIconAvailable = false,
+                        textAlignment = TopBarAlignment.START,
+                        isLeadingIconAvailable = true,
                         onLeadingIconClicked = { },
-                        isTrailingIconAvailable = false,
-                        onTrailingIconClicked = {}
+                        trailingIcons = emptyList()
                     ),
                 )
+
             }
         }
     }

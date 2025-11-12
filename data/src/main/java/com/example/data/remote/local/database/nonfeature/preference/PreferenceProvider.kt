@@ -24,6 +24,7 @@ class PreferenceProvider(
         }
     }
 
+
     companion object {
         val appTheme = stringPreferencesKey("app_theme")
     }

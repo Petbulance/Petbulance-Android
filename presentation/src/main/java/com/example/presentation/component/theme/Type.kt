@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
-import androidx.compose.ui.text.font.FontWeight.Companion.W500
+import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -133,20 +133,20 @@ val PretendardTypography = Typography(
     ),
 )
 
-fun TextStyle.emp() : TextStyle {
+fun TextStyle.emp(): TextStyle {
     return this.copy(
-        fontWeight = W500
+        fontWeight = W600
     )
 }
 
 @Preview(apiLevel = 34)
 @Composable
-private fun TypographyPreview(){
+private fun TypographyPreview() {
     PetbulanceTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.fillMaxSize()
-        ){
+        ) {
             Text(
                 text = "Sample Type headlineLarge",
                 style = MaterialTheme.typography.headlineLarge

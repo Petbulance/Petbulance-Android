@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
 import com.example.presentation.component.ui.LargeRoundedCorner
+import com.example.presentation.component.ui.spacingXL
+import com.example.presentation.component.ui.spacingXXL
 
 /**
  * Creates a basic dialog with a transparent background and a content area.
@@ -51,10 +54,11 @@ fun BasicDialog(
             modifier = modifier
                 .align(Alignment.Center)
                 .background(
-                    color = PetbulanceTheme.colorScheme.bg.default,
+                    color = Color.White,
                     shape = LargeRoundedCorner
                 )
-                .padding(24.dp)
+                .padding(horizontal = spacingXL)
+                .padding(top = spacingXXL, bottom = spacingXL)
                 .fillMaxWidth(minimumWidth),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -70,19 +74,45 @@ fun BasicDialog(
 private fun BasicDialogPreview() {
     BasicDialog {
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Sample Text",
-                style = MaterialTheme.typography.bodyMedium,
-                color = PetbulanceTheme.colorScheme.text.caption
-            )
-            Text(
-                text = "Sample Text",
-                style = MaterialTheme.typography.headlineSmall,
-                color = PetbulanceTheme.colorScheme.text.primary
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Sample Text",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PetbulanceTheme.colorScheme.text.caption
+                )
+                Text(
+                    text = "Sample Text",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = PetbulanceTheme.colorScheme.text.primary
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicButton(
+                    text = "그냥 볼래요",
+                    size = BasicButtonSize.L,
+                    buttonType = BasicButtonType.SECONDARY,
+                    radius = 28.dp,
+                    onClicked = {},
+                    modifier = Modifier.weight(1f)
+                )
+                BasicButton(
+                    text = "로그인",
+                    size = BasicButtonSize.L,
+                    buttonType = BasicButtonType.PRIMARY,
+                    radius = 28.dp,
+                    onClicked = {},
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }

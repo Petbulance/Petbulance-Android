@@ -24,7 +24,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
-import com.example.presentation.utils.nav.safePopBackStack
+import com.example.presentation.utils.nav.ScreenDestinations
+import com.example.presentation.utils.nav.safeNavigate
 
 /**
  * Bottom Navigation Bar
@@ -41,31 +42,45 @@ fun BottomNavigationBar(
 ) {
     val navItemList = listOf(
         BottomNavInfo(
-            label = "기록",
-            iconResourceId = R.drawable.history,
-            bottomNavType = CurrentBottomNav.HISTORY,
-            onClicked = {
-                // TODO : [Bottom Nav] Navigate to History Screen
-                // navController.safeNavigate(ScreenDestinations.History.route)
-            }
-        ),
-        BottomNavInfo(
             label = "홈",
             iconResourceId = R.drawable.home,
             bottomNavType = CurrentBottomNav.HOME,
             onClicked = {
-                navController.safePopBackStack()
+                navController.safeNavigate(ScreenDestinations.Home.route)
             }
         ),
         BottomNavInfo(
-            label = "프로필",
-            iconResourceId = R.drawable.account_circle,
+            label = "병원검색",
+            iconResourceId = R.drawable.health_cross,
+            bottomNavType = CurrentBottomNav.HOSPITAL,
+            onClicked = {
+                /* TODO : navigate to hospital */
+            }
+        ),
+        BottomNavInfo(
+            label = "병원후기",
+            iconResourceId = R.drawable.review,
+            bottomNavType = CurrentBottomNav.REVIEW,
+            onClicked = {
+                /* TODO : navigate to review */
+            }
+        ),
+        BottomNavInfo(
+            label = "커뮤니티",
+            iconResourceId = R.drawable.community,
+            bottomNavType = CurrentBottomNav.COMMUNITY,
+            onClicked = {
+                /* TODO : navigate to community */
+            }
+        ),
+        BottomNavInfo(
+            label = "My",
+            iconResourceId = R.drawable.profile,
             bottomNavType = CurrentBottomNav.PROFILE,
             onClicked = {
-                // TODO : [Bottom Nav] Navigate to Profile Screen
-                // navController.safeNavigate(ScreenDestinations.Profile.route)
+                navController.safeNavigate(ScreenDestinations.MyPage.route)
             }
-        )
+        ),
     )
 
     Row(
@@ -113,7 +128,7 @@ private fun BottomNavItem(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .background(PetbulanceTheme.colorScheme.bg.default),
+                .background(PetbulanceTheme.colorScheme.bg.frame.default),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -126,7 +141,7 @@ private fun BottomNavItem(
             Text(
                 text = itemLabel,
                 color = iconColor,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.labelMedium
             )
         }
     }
@@ -140,7 +155,7 @@ data class BottomNavInfo(
 )
 
 enum class CurrentBottomNav {
-    HISTORY, HOME, PROFILE
+    HOME, HOSPITAL, REVIEW, COMMUNITY, PROFILE
 }
 
 @Preview
