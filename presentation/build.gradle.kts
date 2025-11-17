@@ -48,6 +48,16 @@ android {
         )
         buildConfigField(
             "String",
+            "NAVER_API_CLIENT_ID",
+            "\"${localProperties["NAVER_API_CLIENT_ID"]}\""
+        )
+        buildConfigField(
+            "String",
+            "NAVER_API_CLIENT_SECRET",
+            "\"${localProperties["NAVER_API_CLIENT_SECRET"]}\""
+        )
+        buildConfigField(
+            "String",
             "KAKAO_NATIVE_APP_KEY",
             "\"${localProperties["KAKAO_NATIVE_APP_KEY"]}\""
         )
@@ -118,6 +128,9 @@ dependencies {
     // Permissions
     implementation(libs.accompanist.permissions)
 
+    // Google Play Services Location
+    implementation(libs.play.services.location)
+
     // Firebase & Auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -133,6 +146,9 @@ dependencies {
     implementation(libs.kakao.login)
     implementation(libs.naver.login)
     implementation(libs.googleid)
+
+    // Naver Map
+    implementation(libs.map.sdk)
 
     // Test
     testImplementation(libs.junit)

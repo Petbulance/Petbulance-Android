@@ -8,7 +8,7 @@ sealed class ScreenDestinations(val route: String) {
 
     data object Home : ScreenDestinations("home")
 
-
+    data object HospitalSearch: ScreenDestinations("hospital_search")
 
     data object MyPage : ScreenDestinations("mypage")
 

@@ -38,7 +38,7 @@ class LoginViewModel @Inject constructor(
                         _eventFlow.emit(
                             LoginEvent.DataFetch.Error(
                                 "로그인에 실패했습니다.",
-                                "ID Token is null or empty"
+                                "ID Token is null or stub"
                             )
                         )
                     }

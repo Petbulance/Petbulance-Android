@@ -2,22 +2,24 @@ package com.example.data.common.di
 
 import com.example.data.remote.local.database.nonfeature.preference.PreferenceRepositoryImpl
 import com.example.data.remote.local.repository.ExampleRepositoryImpl
+import com.example.data.repository.feature.hospitals.MockHospitalRepository
 import com.example.data.repository.feature.profile.MockProfileRepository
-import com.example.data.repository.feature.profile.ProfileRepositoryImpl
 import com.example.data.repository.feature.users.MockUsersRepository
-import com.example.data.repository.nonfeature.app.AppRepositoryImpl
+import com.example.data.repository.nonfeature.LogRepositoryImpl
 import com.example.data.repository.nonfeature.app.MockAppRepository
 import com.example.data.repository.nonfeature.login.LoginRepositoryImpl
 import com.example.data.repository.nonfeature.login.TokenRepositoryImpl
 import com.example.data.repository.nonfeature.terms.MockTermsRepository
 import com.example.domain.repository.feature.ExampleRepository
+import com.example.domain.repository.feature.hospitals.HospitalRepository
 import com.example.domain.repository.feature.profile.ProfileRepository
 import com.example.domain.repository.feature.users.UsersRepository
+import com.example.domain.repository.nonfeature.LogRepository
 import com.example.domain.repository.nonfeature.app.AppRepository
 import com.example.domain.repository.nonfeature.login.LoginRepository
 import com.example.domain.repository.nonfeature.login.TokenRepository
-import com.example.domain.repository.nonfeature.terms.TermsRepository
 import com.example.domain.repository.nonfeature.preference.PreferenceRepository
+import com.example.domain.repository.nonfeature.terms.TermsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -73,4 +75,15 @@ abstract class RepositoryModule {
 //        profileRepositoryImpl: ProfileRepositoryImpl
         profileRepositoryImpl: MockProfileRepository
     ): ProfileRepository
+
+    @Binds
+    abstract fun bindHospitalRepository(
+//        hospitalRepositoryImpl: HospitalRepositoryImpl
+        hospitalRepositoryImpl: MockHospitalRepository
+    ): HospitalRepository
+
+    @Binds
+    abstract fun bindLogRepository(
+        logRepositoryImpl: LogRepositoryImpl
+    ): LogRepository
 }

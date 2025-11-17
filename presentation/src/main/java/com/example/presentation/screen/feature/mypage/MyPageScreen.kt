@@ -1,5 +1,6 @@
 package com.example.presentation.screen.feature.mypage
 
+import android.Manifest.permission_group.PHONE
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -41,6 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_9
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -148,7 +151,7 @@ fun MyPageScreen(
                 },
                 onRecentArticleButtonClicked = {},
                 onWrittenArticleButtonClicked = {},
-                onNavigateToStore = {navigateToStore(context)}
+                onNavigateToStore = { navigateToStore(context) }
             )
         }
     }
@@ -185,8 +188,7 @@ private fun MyPageScreenContents(
     onFavoriteReviewButtonClicked: () -> Unit,
     onRecentArticleButtonClicked: () -> Unit,
     onWrittenArticleButtonClicked: () -> Unit,
-
-    onNavigateToStore:() -> Unit
+    onNavigateToStore: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -466,6 +468,7 @@ private fun OptionCard(
             text = title,
             style = MaterialTheme.typography.labelLarge.emp(),
             color = PetbulanceTheme.colorScheme.text.primary,
+            modifier = Modifier.padding(vertical = spacingXXS)
         )
         elements.forEach { elem ->
             OptionCardItem(elem)
@@ -592,7 +595,11 @@ private fun navigateToStore(context: Context) {
     }
 }
 
-@Preview(apiLevel = 34)
+@Preview(name = "Pixel 9", device = PIXEL_9)
+@Preview(name = "Pixel 7 Pro (Wide)", device = Devices.PIXEL_7_PRO)
+@Preview(name = "Pixel 5 (Normal)", device = Devices.PIXEL_5)
+@Preview(name = "Pixel 3 (Small)", device = Devices.PIXEL_3)
+@Preview(name = "Default", device = PHONE)
 @Composable
 private fun MyPageScreenPreview() {
     PetbulanceTheme {

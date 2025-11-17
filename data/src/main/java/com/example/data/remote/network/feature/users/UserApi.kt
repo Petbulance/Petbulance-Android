@@ -5,9 +5,9 @@ import com.example.data.remote.network.feature.users.model.RequestTemporaryNickn
 import com.example.data.remote.network.feature.users.model.SaveUserNicknameRequest
 import com.example.data.remote.network.feature.users.model.SaveUserNicknameResponse
 import com.example.data.remote.network.feature.users.model.ValidateNicknameResponse
-import com.example.data.utils.BASE_URL
-import com.example.data.utils.BaseResponse
-import com.example.data.utils.safeApiCall
+import com.example.data.utils.network.BASE_URL
+import com.example.data.utils.network.BaseResponse
+import com.example.data.utils.network.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

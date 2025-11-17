@@ -1,4 +1,4 @@
-package com.example.data.utils
+package com.example.data.utils.network
 
 import android.util.Log
 import com.example.domain.exception.ServerApiException
@@ -29,6 +29,23 @@ data class ErrorData(
  * @param apiCall 실제 Ktor API를 호출하는 suspend 람다
  * @return API 호출 결과를 담은 Result<T> 객체.
  */
+suspend fun <T> safeApiPageCall(apiCall: suspend () -> BaseResponse<PagedResponse<T>>): Result<PagedResponse<T>> {
+    return try {
+        val response = apiCall()
+        if (response.success) {
+            response.data.let { Result.success(it) }
+        } else {
+            Result.failure(ServerApiException("API call failed with success=false"))
+        }
+    } catch (e: ClientRequestException) {
+        Result.failure(parseErrorResponse(e.response))
+    } catch (e: ServerResponseException) {
+        Result.failure(parseErrorResponse(e.response))
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
+
 suspend fun <T> safeApiCall(apiCall: suspend () -> BaseResponse<T>): Result<T> {
     return try {
         val response = apiCall()

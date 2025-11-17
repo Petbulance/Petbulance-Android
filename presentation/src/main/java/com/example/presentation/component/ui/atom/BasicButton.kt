@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.ui.iconSizeXS
 
 enum class BasicButtonSize {
     XS, S, M, L
@@ -28,13 +31,11 @@ enum class BasicButtonType {
     PRIMARY, SECONDARY
 }
 
-enum class BasicButtonRoundType {
-    SQUARE, ROUNDED
-}
-
 @Composable
 fun BasicButton(
     modifier: Modifier = Modifier,
+    leadingIcon: IconResource? = null,
+    leadingIconSize: Dp = iconSizeXS,
     text: String,
     size: BasicButtonSize,
     buttonType: BasicButtonType = BasicButtonType.PRIMARY,
@@ -72,8 +73,9 @@ fun BasicButton(
         BasicButtonType.SECONDARY -> PetbulanceTheme.colorScheme.action.primary.default
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .heightIn(minHeight)
             .background(background, RoundedCornerShape(radius))
@@ -87,6 +89,15 @@ fun BasicButton(
             )
             .clickable { onClicked() }
     ) {
+        if (leadingIcon != null) {
+            BasicIcon(
+                iconResource = leadingIcon,
+                size = leadingIconSize,
+                contentDescription = "Leading Icon",
+                tint = textColor,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+        }
         Text(
             text = text,
             color = textColor,
@@ -110,6 +121,15 @@ private fun BasicSecondarySquareButtonPreview() {
                     onClicked = {},
                 )
             }
+
+            BasicButton(
+                text = "현 지도에서 검색",
+                size = BasicButtonSize.XS,
+                leadingIcon = IconResource.Vector(Icons.Default.Refresh),
+                buttonType = BasicButtonType.SECONDARY,
+                radius = 1000.dp,
+                onClicked = {}
+            )
         }
     }
 }

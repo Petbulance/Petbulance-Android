@@ -5,9 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.ui.spacingXXS
 import com.example.presentation.utils.nav.ScreenDestinations
 import com.example.presentation.utils.nav.safeNavigate
 
@@ -54,7 +56,7 @@ fun BottomNavigationBar(
             iconResourceId = R.drawable.health_cross,
             bottomNavType = CurrentBottomNav.HOSPITAL,
             onClicked = {
-                /* TODO : navigate to hospital */
+                navController.safeNavigate(ScreenDestinations.HospitalSearch.route)
             }
         ),
         BottomNavInfo(
@@ -86,8 +88,8 @@ fun BottomNavigationBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .height(60.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         navItemList.forEachIndexed { _, item ->
@@ -105,6 +107,7 @@ fun BottomNavigationBar(
         }
     }
 }
+
 
 @Composable
 private fun BottomNavItem(
@@ -126,8 +129,7 @@ private fun BottomNavItem(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(PetbulanceTheme.colorScheme.bg.frame.default),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -136,7 +138,9 @@ private fun BottomNavItem(
                 painter = iconRes,
                 contentDescription = itemLabel,
                 tint = iconColor,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(bottom = spacingXXS)
             )
             Text(
                 text = itemLabel,

@@ -230,7 +230,8 @@ data class IconColors private constructor(
     val disabled: Color,
     val dark: Color,
     val light: Color,
-    val medium: Color
+    val medium: Color,
+    val rating: Color
 ) {
     internal companion object {
         fun create(
@@ -240,9 +241,56 @@ data class IconColors private constructor(
             disabled: Color,
             dark: Color,
             light: Color,
-            medium: Color
+            medium: Color,
+            rating: Color
         ): IconColors {
-            return IconColors(gnb, basic, inverse, disabled, dark, light, medium)
+            return IconColors(gnb, basic, inverse, disabled, dark, light, medium, rating)
+        }
+    }
+}
+
+@ConsistentCopyVisibility
+@Immutable
+data class TagVariant private constructor(
+    val verysubtle: Color,
+    val subtle: Color,
+    val medium: Color,
+    val strong: Color,
+    val verystrong: Color,
+    val bg: Color
+) {
+    internal companion object {
+        fun create(
+            verysubtle: Color,
+            subtle: Color,
+            medium: Color,
+            strong: Color,
+            verystrong: Color,
+            bg: Color
+        ): TagVariant {
+            return TagVariant(verysubtle, subtle, medium, strong, verystrong, bg)
+        }
+    }
+}
+
+@ConsistentCopyVisibility
+@Immutable
+data class TagColors private constructor(
+    val red: TagVariant,
+    val green: TagVariant,
+    val blue: TagVariant,
+    val yellow: TagVariant,
+    val trust: TagVariant
+) {
+    internal companion object {
+        fun create(
+            red: TagVariant,
+            green: TagVariant,
+            blue: TagVariant,
+            yellow: TagVariant,
+            trust: TagVariant
+        ): TagColors {
+            return TagColors(red, green, blue, yellow, trust)
         }
     }
 }
@@ -256,6 +304,7 @@ data class PetbulanceColorScheme(
     val text: TextColors,
     val action: ActionColors,
     val status: StatusColors,
+    val tag: TagColors,
     val border: BorderColors,
     val icon: IconColors,
     val isDark: Boolean

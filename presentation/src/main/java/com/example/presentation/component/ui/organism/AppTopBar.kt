@@ -15,24 +15,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.theme.PetbulanceTheme.colorScheme
 import com.example.presentation.component.theme.emp
 import com.example.presentation.component.ui.atom.BasicIcon
 import com.example.presentation.component.ui.atom.IconResource
+import com.example.presentation.component.ui.spacingXS
 
 @Composable
 fun AppTopBar(
     modifier: Modifier = Modifier,
     topBarInfo: TopBarInfo,
-    background: Color = Color.Transparent,
+    background: Color = colorScheme.bg.frame.default,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color.Black,
+                ambientColor = Color.Black,
+                clip = false
+            )
             .background(color = background)
     ) {
         if (topBarInfo.isLeadingIconAvailable) {
@@ -48,7 +57,7 @@ fun AppTopBar(
 
         Text(
             text = topBarInfo.text,
-            color = PetbulanceTheme.colorScheme.text.primary,
+            color = colorScheme.text.primary,
             style = MaterialTheme.typography.titleMedium.emp(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -65,6 +74,8 @@ fun AppTopBar(
                         TopBarAlignment.START -> 16.dp
                     },
                     end = 56.dp * topBarInfo.trailingIcons.size + 16.dp,
+                    top = spacingXS,
+                    bottom = spacingXS
                 )
                 .padding(vertical = 8.dp)
         )
