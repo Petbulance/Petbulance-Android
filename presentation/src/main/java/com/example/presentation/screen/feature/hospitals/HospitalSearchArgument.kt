@@ -32,6 +32,28 @@ sealed class HospitalSearchIntent {
     data object LoadMore : HospitalSearchIntent()
 }
 
+enum class FilterTab {
+    REGION, ANIMAL_SPECIES
+}
+
+sealed class HospitalFilterBottomSheetState {
+    data object Init : HospitalFilterBottomSheetState()
+    data object OnProgress : HospitalFilterBottomSheetState()
+}
+
+sealed class HospitalFilterIntent {
+    data class OnTabChanged(val tab: FilterTab) : HospitalFilterIntent()
+    data class OnRegionChanged(val region: String, val district: String) : HospitalFilterIntent()
+    data class OnAnimalSpeciesChanged(val species: String, val isSelected: Boolean) : HospitalFilterIntent()
+    data object OnFilterReset : HospitalFilterIntent()
+    data class OnInitializeFilter(val initialTab: FilterTab, val regions: Map<String, List<String>>, val animalSpecies: List<String>) : HospitalFilterIntent()
+    data object OnApplyFilter : HospitalFilterIntent()
+}
+
+sealed class HospitalFilterEvent {
+    data object CloseBottomSheet : HospitalFilterEvent()
+}
+
 sealed class HospitalSearchEvent {
     sealed class DataFetch : HospitalSearchEvent() {
         data class Error(

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -80,7 +81,7 @@ import com.naver.maps.map.NaverMap
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.math.abs
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HospitalSearchScreen(
     navController: NavController,
@@ -107,6 +108,8 @@ fun HospitalSearchScreen(
 
     var isOpenedHospitalOnly by remember { mutableStateOf(searchHospitalParams.openNowOnly) }
     var isSortingDialogVisible by remember { mutableStateOf(false) }
+    var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
+    var initialFilterTab by remember { mutableStateOf(FilterTab.REGION) }
 
     LaunchedEffect(locationPermissionState.status) {
         if (locationPermissionState.status.isGranted) {
@@ -174,13 +177,20 @@ fun HospitalSearchScreen(
                 onLoadMore = {
                     argument.intent(HospitalSearchIntent.LoadMore)
                 },
-                onRegionChipClicked = {},
-                onSpeciesChipClicked = { },
+                onRegionChipClicked = {
+                    initialFilterTab = FilterTab.REGION
+                    isFilterBottomSheetVisible = true
+                },
+                onSpeciesChipClicked = {
+                    initialFilterTab = FilterTab.ANIMAL_SPECIES
+                    isFilterBottomSheetVisible = true
+                },
                 onSortingOptionChipClicked = {
                     isSortingDialogVisible = true
                 },
                 onIsOpenFilterChipClicked = { isOpenedHospitalOnly = !isOpenedHospitalOnly },
                 onMoveToCurrentLocationFabClicked = { argument.intent(HospitalSearchIntent.MoveCameraToCurrentLocation) },
+
             )
         }
     }
@@ -199,6 +209,34 @@ fun HospitalSearchScreen(
             onDismissRequest = { isSortingDialogVisible = false },
             onSortOptionChanged = { newOption ->
                 currentSortOption = newOption
+            }
+        )
+    }
+
+    if (isFilterBottomSheetVisible) {
+        HospitalFilterBottomSheet(
+            onDismissRequest = { isFilterBottomSheetVisible = false },
+            intent = { /* TODO: ViewModel Intent 연결 */ },
+            initialTab = initialFilterTab,
+            // TODO: ViewModel로부터 실제 데이터 수신
+            regions = mapOf(
+                "서울" to listOf("강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구"),
+                "경기" to listOf("수원시", "용인시", "성남시", "고양시"),
+                "인천" to listOf("중구", "동구", "미추홀구", "연수구")
+            ),
+            animalSpecies = listOf("강아지", "고양이", "햄스터", "앵무새", "토끼", "고슴도치", "기타"),
+            selectedRegion = null, // TODO: ViewModel 상태와 연결
+            selectedDistrict = null, // TODO: ViewModel 상태와 연결
+            selectedAnimalSpecies = emptyList() // TODO: ViewModel 상태와 연결
+        )
+    }
+
+    if (errorDialogState.isErrorDialogVisible) {
+        ErrorDialog(
+            errorDialogState = errorDialogState,
+            errorHandler = {
+                errorDialogState = errorDialogState.toggleVisibility()
+                navController.safeNavigate(ScreenDestinations.Home.route)
             }
         )
     }
