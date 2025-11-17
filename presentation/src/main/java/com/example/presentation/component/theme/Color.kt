@@ -104,6 +104,50 @@ private val LightColorScheme = PetbulanceColorScheme(
         )
     ),
 
+    // "tag":
+    tag = TagColors.create(
+        red = TagVariant.create(
+            verysubtle = PetbulancePrimitives.Tertiary.p300,
+            subtle = PetbulancePrimitives.Tertiary.p500,
+            medium = PetbulancePrimitives.Tertiary.p600,
+            strong = PetbulancePrimitives.Tertiary.p700,
+            verystrong = PetbulancePrimitives.Tertiary.p800,
+            bg = PetbulancePrimitives.Tertiary.p100
+        ),
+        green = TagVariant.create(
+            verysubtle = PetbulancePrimitives.Positive.p100,
+            subtle = PetbulancePrimitives.Positive.p300,
+            medium = PetbulancePrimitives.Positive.p500,
+            strong = PetbulancePrimitives.Positive.p600,
+            verystrong = PetbulancePrimitives.Positive.p700,
+            bg = PetbulancePrimitives.Positive.p50
+        ),
+        blue = TagVariant.create(
+            verysubtle = PetbulancePrimitives.Info.p100,
+            subtle = PetbulancePrimitives.Info.p300,
+            medium = PetbulancePrimitives.Info.p500,
+            strong = PetbulancePrimitives.Info.p600,
+            verystrong = PetbulancePrimitives.Info.p700,
+            bg = PetbulancePrimitives.Info.p50
+        ),
+        yellow = TagVariant.create(
+            verysubtle = PetbulancePrimitives.Quaternary.p100,
+            subtle = PetbulancePrimitives.Quaternary.p300,
+            medium = PetbulancePrimitives.Quaternary.p500,
+            strong = PetbulancePrimitives.Quaternary.p600,
+            verystrong = PetbulancePrimitives.Quaternary.p700,
+            bg = PetbulancePrimitives.Quaternary.p50
+        ),
+        trust = TagVariant.create(
+            verysubtle = PetbulancePrimitives.Secondary.p100,
+            subtle = PetbulancePrimitives.Secondary.p300,
+            medium = PetbulancePrimitives.Secondary.p500,
+            strong = PetbulancePrimitives.Secondary.p600,
+            verystrong = PetbulancePrimitives.Secondary.p700,
+            bg = PetbulancePrimitives.Secondary.p50
+        )
+    ),
+
     // "border":
     border = BorderColors.create(
         active = PetbulancePrimitives.Gray.p900,
@@ -128,6 +172,7 @@ private val LightColorScheme = PetbulanceColorScheme(
         dark = PetbulancePrimitives.Gray.p900,
         light = PetbulancePrimitives.Gray.p500,
         medium = PetbulancePrimitives.Gray.p600,
+        rating = PetbulancePrimitives.Warning.p500,
     ),
 
     isDark = false

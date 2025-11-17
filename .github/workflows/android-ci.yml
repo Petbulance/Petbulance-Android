@@ -30,11 +30,15 @@ jobs:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           KAKAO_NATIVE_APP_KEY: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+          NAVER_API_CLIENT_ID: ${{ secrets.NAVER_API_CLIENT_ID }}
+          NAVER_API_CLIENT_SECRET: ${{ secrets.NAVER_API_CLIENT_SECRET }}
         run: |
           echo "WEB_CLIENT_ID=${WEB_CLIENT_ID}" >> local.properties
           echo "NAVER_CLIENT_ID=${NAVER_CLIENT_ID}" >> local.properties
           echo "NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}" >> local.properties
           echo "KAKAO_NATIVE_APP_KEY=${KAKAO_NATIVE_APP_KEY}" >> local.properties
+          echo "NAVER_API_CLIENT_ID=${NAVER_API_CLIENT_ID}" >> local.properties
+          echo "NAVER_API_CLIENT_SECRET=${NAVER_API_CLIENT_SECRET}" >> local.properties
 
       - name: Create google-services.json
         env:

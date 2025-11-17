@@ -18,10 +18,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
+import com.example.presentation.component.theme.emp
 import com.example.presentation.component.ui.LargeRoundedCorner
+import com.example.presentation.component.ui.iconSizeMedium
+import com.example.presentation.component.ui.spacingLarge
 import com.example.presentation.component.ui.spacingXL
 import com.example.presentation.component.ui.spacingXXL
 
@@ -39,12 +44,14 @@ fun BasicDialog(
     modifier: Modifier = Modifier,
     minimumWidth: Float = 0.8f,
     backHandler: () -> Unit = {},
+    position: Alignment = Alignment.Center,
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black.copy(alpha = 0.5f))
+            .padding(horizontal = 16.dp)
             .clickable(
                 enabled = true,
                 indication = null,
@@ -52,16 +59,16 @@ fun BasicDialog(
     ) {
         Column(
             modifier = modifier
-                .align(Alignment.Center)
+                .align(position)
                 .background(
                     color = Color.White,
                     shape = LargeRoundedCorner
                 )
                 .padding(horizontal = spacingXL)
                 .padding(top = spacingXXL, bottom = spacingXL)
-                .fillMaxWidth(minimumWidth),
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(spacingXL)
         ) {
             content()
         }
@@ -74,44 +81,71 @@ fun BasicDialog(
 private fun BasicDialogPreview() {
     BasicDialog {
         Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(spacingLarge),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "어떤 순서로 정렬할까요?",
+                style = MaterialTheme.typography.titleMedium.emp(),
+                color = PetbulanceTheme.colorScheme.text.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Sample Text",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PetbulanceTheme.colorScheme.text.caption
-                )
-                Text(
-                    text = "Sample Text",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = PetbulanceTheme.colorScheme.text.primary
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicButton(
-                    text = "그냥 볼래요",
-                    size = BasicButtonSize.L,
-                    buttonType = BasicButtonType.SECONDARY,
-                    radius = 28.dp,
-                    onClicked = {},
-                    modifier = Modifier.weight(1f)
-                )
-                BasicButton(
-                    text = "로그인",
-                    size = BasicButtonSize.L,
-                    buttonType = BasicButtonType.PRIMARY,
-                    radius = 28.dp,
-                    onClicked = {},
-                    modifier = Modifier.weight(1f)
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "리뷰 많은 순",
+                        style = MaterialTheme.typography.bodyLarge.emp(),
+                        color = PetbulanceTheme.colorScheme.text.tertiary,
+                    )
+                    BasicIcon(
+                        iconResource = IconResource.Drawable(R.drawable.icon_checkmark),
+                        size = iconSizeMedium,
+                        contentDescription = "checkmark",
+                        tint = PetbulanceTheme.colorScheme.icon.inverse /* TODO : 모듈화 */
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "가까운 순",
+                        style = MaterialTheme.typography.bodyLarge.emp(),
+                        color = PetbulanceTheme.colorScheme.text.tertiary,
+                    )
+                    BasicIcon(
+                        iconResource = IconResource.Drawable(R.drawable.icon_checkmark),
+                        size = iconSizeMedium,
+                        contentDescription = "checkmark",
+                        tint = PetbulanceTheme.colorScheme.icon.inverse
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "평점 높은 순",
+                        style = MaterialTheme.typography.bodyLarge.emp(),
+                        color = PetbulanceTheme.colorScheme.text.tertiary,
+                    )
+                    BasicIcon(
+                        iconResource = IconResource.Drawable(R.drawable.icon_checkmark),
+                        size = iconSizeMedium,
+                        contentDescription = "checkmark",
+                        tint = PetbulanceTheme.colorScheme.icon.inverse
+                    )
+                }
             }
         }
     }
