@@ -44,7 +44,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.domain.model.common.MapBounds
 import com.example.domain.model.feature.hospitals.Hospital
+import com.example.domain.model.type.AnimalSpecies
 import com.example.domain.model.type.HospitalSortOption
+import com.example.domain.model.type.Region
 import com.example.domain.model.type.toKorean
 import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
@@ -218,16 +220,9 @@ fun HospitalSearchScreen(
             onDismissRequest = { isFilterBottomSheetVisible = false },
             intent = { /* TODO: ViewModel Intent 연결 */ },
             initialTab = initialFilterTab,
-            // TODO: ViewModel로부터 실제 데이터 수신
-            regions = mapOf(
-                "서울" to listOf("강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구"),
-                "경기" to listOf("수원시", "용인시", "성남시", "고양시"),
-                "인천" to listOf("중구", "동구", "미추홀구", "연수구")
-            ),
-            animalSpecies = listOf("강아지", "고양이", "햄스터", "앵무새", "토끼", "고슴도치", "기타"),
-            selectedRegion = null, // TODO: ViewModel 상태와 연결
-            selectedDistrict = null, // TODO: ViewModel 상태와 연결
-            selectedAnimalSpecies = emptyList() // TODO: ViewModel 상태와 연결
+            selectedRegion = searchHospitalParams.region,
+            selectedDistrict = searchHospitalParams.district,
+            selectedAnimalSpecies = searchHospitalParams.animal
         )
     }
 

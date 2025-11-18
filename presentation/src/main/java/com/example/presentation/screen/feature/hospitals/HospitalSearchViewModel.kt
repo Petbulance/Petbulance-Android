@@ -119,7 +119,6 @@ class HospitalSearchViewModel @Inject constructor(
 
         when {
             hasFineLocationPermission -> {
-                Log.d("siria22", "Has fine location permission")
                 val fetchedLocation = fetchCurrentCoordinate(context)
                 _currentLocation.value = fetchedLocation
                 _cameraPosition.value = fetchedLocation
@@ -134,14 +133,12 @@ class HospitalSearchViewModel @Inject constructor(
 
             hasCoarseLocationPermission -> {
                 launch {
-                    Log.d("siria22", "Has coarse location permission")
                     _eventFlow.emit(HospitalSearchEvent.Permission.LackOfPermission)
                 }
             }
 
             else -> {
                 launch {
-                    Log.d("siria22", "No Permission Granted")
                     _eventFlow.emit(HospitalSearchEvent.Permission.NoPermissionGranted)
                 }
             }

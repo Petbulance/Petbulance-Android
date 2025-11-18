@@ -13,7 +13,7 @@ class SearchHospitalsUseCase @Inject constructor(
     suspend operator fun invoke(param: SearchHospitalParams): Result<PagedData<Hospital>> {
         return hospitalRepository.searchHospitals(
             q = param.q,
-            region = param.region,
+            region = "${param.region} ${param.district}",
             lat = param.lat,
             lng = param.lng,
             bounds = param.bounds,
@@ -27,7 +27,8 @@ class SearchHospitalsUseCase @Inject constructor(
 
 data class SearchHospitalParams(
     val q: String? = null,
-    val region: String? = null, /* TODO : 이 부분 초기에 어떻게 줘야할지? */
+    val region: String? = null,
+    val district: String? = null,
     val lat: Double? = null,
     val lng: Double? = null,
     val bounds: MapBounds? = null,

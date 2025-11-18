@@ -36,6 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.domain.model.type.AnimalSpecies
+import com.example.domain.model.type.Region
+import com.example.domain.model.type.toKorean
 import com.example.presentation.component.theme.PetbulanceTheme
 import com.example.presentation.component.theme.PetbulanceTheme.colorScheme
 import com.example.presentation.component.ui.atom.BasicButton
@@ -53,24 +56,25 @@ fun HospitalFilterBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     intent: (HospitalFilterIntent) -> Unit,
     initialTab: FilterTab,
-    regions: Map<String, List<String>>,
-    animalSpecies: List<String>,
     selectedRegion: String?,
     selectedDistrict: String?,
-    selectedAnimalSpecies: List<String>
+    selectedAnimalSpecies: List<AnimalSpecies>?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
+    val regionsMap = remember { Region.entries.associate { it.displayName to it.districts } }
+    val animalSpecies = remember { AnimalSpecies.entries }
+
     var currentTab by remember { mutableStateOf(initialTab) }
-    var currentSelectedRegion by remember { mutableStateOf(selectedRegion ?: regions.keys.first()) }
+    var currentSelectedRegion by remember { mutableStateOf(selectedRegion ?: regionsMap.keys.first()) }
     var currentSelectedDistrict by remember { mutableStateOf(selectedDistrict) }
     var currentSelectedAnimalSpecies by remember { mutableStateOf(selectedAnimalSpecies) }
 
     val resetFilters = {
-        currentSelectedRegion = regions.keys.first()
+        currentSelectedRegion = regionsMap.keys.first()
         currentSelectedDistrict = null
         currentSelectedAnimalSpecies = emptyList()
-        intent(HospitalFilterIntent.OnFilterReset) // TODO: ViewModel 연동
+        intent(HospitalFilterIntent.OnFilterReset)
     }
 
     BackHandler {
@@ -120,7 +124,7 @@ fun HospitalFilterBottomSheet(
                 when (currentTab) {
                     FilterTab.REGION -> {
                         RegionSelection(
-                            regions = regions,
+                            regions = regionsMap,
                             selectedRegion = currentSelectedRegion,
                             selectedDistrict = currentSelectedDistrict,
                             onRegionSelected = { region, district ->
@@ -135,7 +139,7 @@ fun HospitalFilterBottomSheet(
                             animalSpecies = animalSpecies,
                             selectedAnimalSpecies = currentSelectedAnimalSpecies,
                             onSpeciesSelected = { species ->
-                                val newList = currentSelectedAnimalSpecies.toMutableList()
+                                val newList = currentSelectedAnimalSpecies?.toMutableList() ?: mutableListOf()
                                 if (newList.contains(species)) newList.remove(species)
                                 else newList.add(species)
                                 currentSelectedAnimalSpecies = newList
@@ -152,7 +156,7 @@ fun HospitalFilterBottomSheet(
                 buttonType = BasicButtonType.PRIMARY,
                 size = BasicButtonSize.L,
                 onClicked = {
-                    intent(HospitalFilterIntent.OnApplyFilter) // TODO: ViewModel 연동
+                    intent(HospitalFilterIntent.OnApplyFilter)
                     coroutineScope.launch {
                         sheetState.hide()
                     }.invokeOnCompletion {
@@ -206,9 +210,9 @@ private fun RegionSelection(
 
 @Composable
 private fun AnimalSpeciesSelection(
-    animalSpecies: List<String>,
-    selectedAnimalSpecies: List<String>,
-    onSpeciesSelected: (String) -> Unit
+    animalSpecies: List<AnimalSpecies>,
+    selectedAnimalSpecies: List<AnimalSpecies>?,
+    onSpeciesSelected: (AnimalSpecies) -> Unit
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -216,114 +220,14 @@ private fun AnimalSpeciesSelection(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         animalSpecies.forEach { species ->
-            val isSelected = selectedAnimalSpecies.contains(species)
+            val isSelected = selectedAnimalSpecies?.contains(species) ?: false
             val color = if (isSelected) colorScheme.tag.blue.medium else colorScheme.text.tertiary
             BasicChip(
-                text = species,
+                text = species.toKorean(),
                 onClick = { onSpeciesSelected(species) },
                 borderColor = color,
                 textColor = color,
                 dropShadow = true
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true, apiLevel = 34)
-@Composable
-private fun HospitalFilterBottomSheetPreview() {
-    PetbulanceTheme {
-        Column(modifier = Modifier.padding(16.dp).background(Color.White)) {
-            var currentTab by remember { mutableStateOf(FilterTab.REGION) }
-            var currentSelectedRegion by remember { mutableStateOf("서울") }
-            var currentSelectedDistrict by remember { mutableStateOf<String?>("강남구") }
-            var currentSelectedAnimalSpecies by remember { mutableStateOf(listOf("강아지", "고양이")) }
-
-            val regions = mapOf(
-                "서울" to listOf(
-                    "강남구",
-                    "강동구",
-                    "강북구",
-                    "강서구",
-                    "관악구",
-                    "광진구",
-                    "구로구",
-                    "금천구",
-                    "노원구",
-                    "도봉구",
-                    "동대문구",
-                    "동작구"
-                ),
-                "경기" to listOf("수원시", "용인시", "성남시", "고양시"),
-                "인천" to listOf("중구", "동구", "미추홀구", "연수구")
-            )
-            val animalSpecies = listOf("강아지", "고양이", "햄스터", "앵무새", "토끼", "고슴도치", "기타")
-
-            TabRow(selectedTabIndex = currentTab.ordinal) {
-                Tab(
-                    selected = currentTab == FilterTab.REGION,
-                    onClick = { currentTab = FilterTab.REGION },
-                    text = { Text("지역") }
-                )
-                Tab(
-                    selected = currentTab == FilterTab.ANIMAL_SPECIES,
-                    onClick = { currentTab = FilterTab.ANIMAL_SPECIES },
-                    text = { Text("동물종") }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Row(
-                    modifier = Modifier.clickable { /* reset */ },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("선택 초기화")
-                    BasicIcon(
-                        iconResource = IconResource.Vector(Icons.Default.Refresh),
-                        contentDescription = "reset"
-                    )
-                }
-            }
-
-            Box(modifier = Modifier.heightIn(min = 300.dp, max = 400.dp)) {
-                when (currentTab) {
-                    FilterTab.REGION -> {
-                        RegionSelection(
-                            regions = regions,
-                            selectedRegion = currentSelectedRegion,
-                            selectedDistrict = currentSelectedDistrict,
-                            onRegionSelected = { region, district ->
-                                currentSelectedRegion = region
-                                currentSelectedDistrict = district
-                            }
-                        )
-                    }
-
-                    FilterTab.ANIMAL_SPECIES -> {
-                        AnimalSpeciesSelection(
-                            animalSpecies = animalSpecies,
-                            selectedAnimalSpecies = currentSelectedAnimalSpecies,
-                            onSpeciesSelected = { species ->
-                                val newList = currentSelectedAnimalSpecies.toMutableList()
-                                if (newList.contains(species)) newList.remove(species)
-                                else newList.add(species)
-                                currentSelectedAnimalSpecies = newList
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            BasicButton(
-                text = "병원 보기",
-                buttonType = BasicButtonType.PRIMARY,
-                size = BasicButtonSize.L,
-                onClicked = {}
             )
         }
     }
