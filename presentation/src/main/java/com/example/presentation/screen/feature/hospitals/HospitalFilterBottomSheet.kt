@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -230,5 +231,22 @@ private fun AnimalSpeciesSelection(
                 dropShadow = true
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun HospitalFilterBottomSheetPreview() {
+    PetbulanceTheme {
+        HospitalFilterBottomSheet(
+            onDismissRequest = {},
+            sheetState = rememberModalBottomSheetState(),
+            intent = {},
+            initialTab = FilterTab.REGION,
+            selectedRegion = "서울",
+            selectedDistrict = "강남구",
+            selectedAnimalSpecies = listOf(AnimalSpecies.CHINCHILLA, AnimalSpecies.AXOLOTL)
+        )
     }
 }

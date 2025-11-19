@@ -73,7 +73,7 @@ fun BasicButton(
     }
 
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .heightIn(minHeight)
