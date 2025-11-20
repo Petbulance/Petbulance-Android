@@ -222,7 +222,8 @@ fun HospitalSearchScreen(
             initialTab = initialFilterTab,
             selectedRegion = searchHospitalParams.region,
             selectedDistrict = searchHospitalParams.district,
-            selectedAnimalSpecies = searchHospitalParams.animal
+            selectedAnimalSpecies = searchHospitalParams.animal,
+            onApplyFilter = {},
         )
     }
 
