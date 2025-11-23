@@ -36,7 +36,11 @@ class HospitalSearchViewModel @Inject constructor(
         longitude = 126.9780
     }
 
-    private val _state = MutableStateFlow<HospitalSearchState>(HospitalSearchState.Init)
+    private val _dataState =
+        MutableStateFlow<HospitalSearchState.DataState>(HospitalSearchState.DataState.Init)
+
+    private val _state =
+        MutableStateFlow<HospitalSearchState>(HospitalSearchState.ScreenState.MapView)
     val state: StateFlow<HospitalSearchState> = _state
 
     private val _eventFlow = MutableSharedFlow<HospitalSearchEvent>(replay = 1)
@@ -68,6 +72,10 @@ class HospitalSearchViewModel @Inject constructor(
 
     fun onIntent(intent: HospitalSearchIntent) {
         when (intent) {
+            is HospitalSearchIntent.ChangeScreenState -> {
+                _state.value = intent.state
+            }
+
             is HospitalSearchIntent.FetchCurrentLocation -> {
                 launch { checkAndFetchLocation(intent.context) }
             }
@@ -163,7 +171,7 @@ class HospitalSearchViewModel @Inject constructor(
     }
 
     private suspend fun searchNearByHospitals(boundary: MapBounds) {
-        _state.value = HospitalSearchState.OnProgress
+        _dataState.value = HospitalSearchState.DataState.OnProgress
         runCatching {
             _searchHospitalParams.value = SearchHospitalParams(
                 lat = _currentLocation.value.latitude,
@@ -179,7 +187,7 @@ class HospitalSearchViewModel @Inject constructor(
                 )
             )
         }
-        _state.value = HospitalSearchState.Init
+        _dataState.value = HospitalSearchState.DataState.Init
     }
 
     private fun onQueryChanged(newParams: SearchHospitalParams) {
@@ -199,12 +207,12 @@ class HospitalSearchViewModel @Inject constructor(
                 _hospitalsResult.value = emptyList()
                 lastQuery = _searchHospitalParams.value.copy()
             } else {
-                if (_isLastPage.value || _state.value == HospitalSearchState.OnProgress) return@launch
+                if (_isLastPage.value || _dataState.value == HospitalSearchState.DataState.OnProgress) return@launch
                 currentPage += 1
             }
 
             val params = _searchHospitalParams.value.copy(page = currentPage)
-            _state.value = HospitalSearchState.OnProgress
+            _dataState.value = HospitalSearchState.DataState.OnProgress
 
             runCatching {
                 searchHospitalsUseCase(params)
@@ -216,7 +224,11 @@ class HospitalSearchViewModel @Inject constructor(
                     _hospitalsResult.value + pageData.content
                 }
                 _isLastPage.value = pageData.isLast
-                _state.value = HospitalSearchState.Init
+                _dataState.value = HospitalSearchState.DataState.Init
+
+                if (_hospitalsResult.value.isEmpty()) {
+                    _state.value = HospitalSearchState.ScreenState.NoResultView
+                }
             }.onFailure { ex ->
                 _eventFlow.emit(
                     HospitalSearchEvent.DataFetch.Error(
@@ -224,7 +236,7 @@ class HospitalSearchViewModel @Inject constructor(
                         exceptionMessage = ex.message
                     )
                 )
-                _state.value = HospitalSearchState.Init
+                _dataState.value = HospitalSearchState.DataState.Init
             }
         }
     }

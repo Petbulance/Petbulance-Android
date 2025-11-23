@@ -1,6 +1,7 @@
 package com.example.presentation.screen.feature.hospitals
 
 import android.Manifest.permission_group.PHONE
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -74,7 +75,6 @@ fun HospitalFilterBottomSheet(
     selectedDistrict: String?,
     selectedAnimalSpecies: List<AnimalSpecies>?,
     onApplyFilter: (String?, String?, List<AnimalSpecies>?) -> Unit,
-    onResetFilter: () -> Unit,
     onCurrentRegionDetectButtonClicked: () -> Unit
 ) {
     val regionsMap = remember { Region.entries.associate { it.displayName to it.districts } }
@@ -93,18 +93,15 @@ fun HospitalFilterBottomSheet(
         currentSelectedRegion = regionsMap.keys.first()
         currentSelectedDistrict = null
         currentSelectedAnimalSpecies = emptyList()
-        onResetFilter()
     }
 
     BackHandler {
-        resetFilters()
         onDismissRequest()
     }
 
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = {
-            resetFilters()
             onDismissRequest()
         },
         containerColor = Color.White
@@ -337,10 +334,7 @@ private fun RegionSelection(
                         else colorScheme.text.caption,
                         modifier = Modifier
                             .clickable {
-                                onRegionSelected(
-                                    region,
-                                    regions[selectedRegion]!!.first()
-                                )
+                                onRegionSelected(region, regions[region]!!.first())
                             }
                             .padding(horizontal = spacingLarge, vertical = spacingSmall)
                             .align(Alignment.Center),

@@ -15,24 +15,16 @@ class SearchHospitalsUseCase @Inject constructor(
     /* TODO : debugging */
     suspend operator fun invoke(param: SearchHospitalParams): Result<PagedData<Hospital>> {
         printLogUseCase(param, "Search Hospital UseCase")
-//        return hospitalRepository.searchHospitals(
-//            q = param.q,
-//            region = "${param.region} ${param.district}",
-//            lat = param.lat,
-//            lng = param.lng,
-//            bounds = param.bounds,
-//            animal = param.animal,
-//            openNow = param.openNowOnly,
-//            page = param.page,
-//            size = param.size
-//        )
-        return Result.success(
-            PagedData(
-                listOf(Hospital.stub()),
-                totalPages = 1,
-                totalElements = 1,
-                isLast = false
-            )
+        return hospitalRepository.searchHospitals(
+            q = param.q,
+            region = "${param.region} ${param.district}",
+            lat = param.lat,
+            lng = param.lng,
+            bounds = param.bounds,
+            animal = param.animal,
+            openNow = param.openNowOnly,
+            page = param.page,
+            size = param.size
         )
     }
 }

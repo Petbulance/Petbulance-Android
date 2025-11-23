@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.domain.model.common.MapBounds
 import com.example.domain.model.feature.hospitals.Hospital
+import com.example.domain.model.type.AnimalSpecies
 import com.example.domain.model.type.HospitalSortOption
 import com.example.domain.model.type.toKorean
 import com.example.domain.usecase.feature.hospitals.SearchHospitalParams
@@ -60,6 +62,7 @@ import com.example.presentation.component.ui.atom.BasicChip
 import com.example.presentation.component.ui.atom.BasicFab
 import com.example.presentation.component.ui.atom.BasicFabType
 import com.example.presentation.component.ui.atom.BasicIcon
+import com.example.presentation.component.ui.atom.BasicInputTextField
 import com.example.presentation.component.ui.atom.IconResource
 import com.example.presentation.component.ui.iconSizeMedium
 import com.example.presentation.component.ui.molecule.SortOptionDialog
@@ -98,16 +101,33 @@ fun HospitalSearchScreen(
         permission = Manifest.permission.ACCESS_FINE_LOCATION
     )
 
+    val updateScreenState = { newState: HospitalSearchState.ScreenState ->
+        argument.intent(HospitalSearchIntent.ChangeScreenState(newState))
+    }
+
+    val updateQuery =
+        { q: String?, region: String?, district: String?, animalSpecies: List<AnimalSpecies>? ->
+            argument.intent(
+                HospitalSearchIntent.UpdateQuery(
+                    newQuery = SearchHospitalParams(
+                        q = q,
+                        region = region,
+                        district = district,
+                        animal = animalSpecies
+                    )
+                )
+            )
+        }
     var isFineLocationPermissionRequestDialogVisible by remember { mutableStateOf(false) }
 
     val currentLocation = data.currentLocation
     val hospitalsResult = data.hospitalsResult
     val selectedHospitalId = data.currentSelectedHospitalId
-    val searchHospitalParams = data.searchHospitalParams
+    val currentHospitalSearchParameters = data.searchHospitalParams
     val cameraPosition = data.cameraPosition
     val isLastPage = data.isLastPage
 
-    var isOpenedHospitalOnly by remember { mutableStateOf(searchHospitalParams.openNowOnly) }
+    var isOpenedHospitalOnly by remember { mutableStateOf(currentHospitalSearchParameters.openNowOnly) }
     var isSortingDialogVisible by remember { mutableStateOf(false) }
     var isFilterBottomSheetVisible by remember { mutableStateOf(false) }
     var initialFilterTab by remember { mutableStateOf(FilterTab.REGION) }
@@ -145,9 +165,8 @@ fun HospitalSearchScreen(
                     isLeadingIconAvailable = false,
                     trailingIcons = listOf(
                         Pair(
-                            IconResource.Drawable(R.drawable.search),
-                            { /* TODO : search logic */ }
-                        )
+                            IconResource.Drawable(R.drawable.search)
+                        ) { updateScreenState(HospitalSearchState.ScreenState.SearchView) }
                     )
                 ),
             )
@@ -162,13 +181,18 @@ fun HospitalSearchScreen(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             HospitalSearchScreenContents(
+                screenState = argument.state,
                 currentLocation = currentLocation,
+                currentHospitalSearchParameters = currentHospitalSearchParameters,
                 hospitalsResult = hospitalsResult,
                 isOpenedHospitalOnly = isOpenedHospitalOnly,
                 cameraPosition = cameraPosition,
                 selectedHospitalId = selectedHospitalId,
                 isLastPage = isLastPage,
                 currentSortOption = currentSortOption,
+                recentQueries = listOf(), /* TODO :  */
+                recentViewedHospitals = listOf(), /* TODO :  */
+                onScreenStateChanged = { updateScreenState(it) },
                 onMapBoundsChange = { bounds ->
                     argument.intent(HospitalSearchIntent.SearchNearByHospitals(bounds = bounds))
                 },
@@ -191,8 +215,10 @@ fun HospitalSearchScreen(
                 },
                 onIsOpenFilterChipClicked = { isOpenedHospitalOnly = !isOpenedHospitalOnly },
                 onMoveToCurrentLocationFabClicked = { argument.intent(HospitalSearchIntent.MoveCameraToCurrentLocation) },
-
-                )
+                onApplyFilter = { q, r, d, a ->
+                    updateQuery(q, r, d, a)
+                }
+            )
         }
     }
 
@@ -218,24 +244,14 @@ fun HospitalSearchScreen(
         HospitalFilterBottomSheet(
             onDismissRequest = { isFilterBottomSheetVisible = false },
             initialTab = initialFilterTab,
-            selectedRegion = searchHospitalParams.region,
-            selectedDistrict = searchHospitalParams.district,
-            selectedAnimalSpecies = searchHospitalParams.animal,
+            selectedRegion = currentHospitalSearchParameters.region,
+            selectedDistrict = currentHospitalSearchParameters.district,
+            selectedAnimalSpecies = currentHospitalSearchParameters.animal,
             onApplyFilter = { region, district, animalSpecies ->
-                argument.intent(
-                    HospitalSearchIntent.UpdateQuery(
-                        newQuery = SearchHospitalParams(
-                            q = null,
-                            region = region,
-                            district = district,
-                            animal = animalSpecies
-                        )
-                    )
-                )
+                updateQuery(null, region, district, animalSpecies)
                 isFilterBottomSheetVisible = false
             },
-            onResetFilter = { },
-            onCurrentRegionDetectButtonClicked = {},
+            onCurrentRegionDetectButtonClicked = { /* TODO : 현위치 선택 */ },
         )
     }
 
@@ -251,13 +267,18 @@ fun HospitalSearchScreen(
 
 @Composable
 private fun HospitalSearchScreenContents(
+    screenState: HospitalSearchState,
     currentLocation: Location,
+    currentHospitalSearchParameters: SearchHospitalParams,
     selectedHospitalId: Long,
     hospitalsResult: List<Hospital>,
     isOpenedHospitalOnly: Boolean,
     cameraPosition: Location,
     isLastPage: Boolean,
     currentSortOption: HospitalSortOption,
+    recentQueries: List<String>,
+    recentViewedHospitals: List<Hospital>,
+    onScreenStateChanged: (HospitalSearchState.ScreenState) -> Unit,
     onMapBoundsChange: (MapBounds) -> Unit,
     onMarkerClicked: (Long) -> Unit,
     onLoadMore: () -> Unit,
@@ -265,10 +286,9 @@ private fun HospitalSearchScreenContents(
     onSpeciesChipClicked: () -> Unit,
     onSortingOptionChipClicked: () -> Unit,
     onIsOpenFilterChipClicked: () -> Unit,
-    onMoveToCurrentLocationFabClicked: () -> Unit
+    onMoveToCurrentLocationFabClicked: () -> Unit,
+    onApplyFilter: (String?, String?, String?, List<AnimalSpecies>?) -> Unit
 ) {
-    var isMapListOpened by remember { mutableStateOf(false) }
-
     val hospitals = when (currentSortOption) {
         HospitalSortOption.DISTANCE -> hospitalsResult.sortedBy { it.distanceMeters }
         HospitalSortOption.RATINGS -> hospitalsResult.sortedByDescending { it.rating }
@@ -277,37 +297,93 @@ private fun HospitalSearchScreenContents(
         if (isOpenedHospitalOnly) it.isOpenNow else true
     }
 
+    var queryString by remember { mutableStateOf("") }
+
+    var naverMap by remember { mutableStateOf<NaverMap?>(null) }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
-        if (hospitalsResult.isEmpty()) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.image_no_result),
-                    contentDescription = "no result image",
-                    modifier = Modifier.fillMaxSize(0.22f)
-                )
-                Text(
-                    text = "주변 병원을 찾을 수 없어요.",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = colorScheme.text.tertiary,
-                    modifier = Modifier.padding(bottom = spacingSmall)
-                )
-                Text(
-                    text = "좀 더 넓은 지역으로 검색해보세요.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorScheme.text.tertiary,
-                )
+        NaverMapView(
+            currentLocation = currentLocation,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
+            places = hospitals.map { it.toMarker() },
+            onMapReady = { map -> naverMap = map },
+            onMapBoundsChange = {},
+            selectedHospitalId = selectedHospitalId,
+            onMarkerClicked = onMarkerClicked,
+            cameraPosition = cameraPosition
+        )
+
+        when (screenState) {
+            is HospitalSearchState.ScreenState.NoResultView -> {
+                EmptyResultContent()
             }
-        } else {
 
-            var naverMap by remember { mutableStateOf<NaverMap?>(null) }
+            is HospitalSearchState.ScreenState.MapView -> {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        RowChipFilters(
+                            currentSortOption = currentSortOption,
+                            isOpenedHospitalOnly = isOpenedHospitalOnly,
+                            onRegionChipClicked = onRegionChipClicked,
+                            onSpeciesChipClicked = onSpeciesChipClicked,
+                            onSortingOptionChipClicked = onSortingOptionChipClicked,
+                            onIsOpenFilterChipClicked = onIsOpenFilterChipClicked
+                        )
+                        BasicButton(
+                            text = "현 지도에서 검색",
+                            size = BasicButtonSize.XS,
+                            leadingIcon = IconResource.Vector(Icons.Default.Refresh),
+                            buttonType = BasicButtonType.SECONDARY,
+                            radius = 1000.dp,
+                            onClicked = {
+                                val bounds = naverMap?.contentBounds
+                                if (bounds != null) {
+                                    val domainBounds = MapBounds(
+                                        minLat = bounds.southWest.latitude,
+                                        minLng = bounds.southWest.longitude,
+                                        maxLat = bounds.northEast.latitude,
+                                        maxLng = bounds.northEast.longitude
+                                    )
+                                    onMapBoundsChange(domainBounds)
+                                }
+                            }
+                        )
+                    }
 
-            if (isMapListOpened) {
-                MapListViewer(
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        FabIcons(
+                            isMapListOpened = screenState == HospitalSearchState.ScreenState.ListView,
+                            onOpenListButtonClicked = { onScreenStateChanged(HospitalSearchState.ScreenState.ListView) },
+                            onMoveToCurrentLocationFabClicked = onMoveToCurrentLocationFabClicked
+                        )
+
+                        if (hospitals.isNotEmpty()) {
+                            HospitalCarousel(
+                                hospitals = hospitals,
+                                selectedHospitalId = selectedHospitalId,
+                                onHospitalSelected = { hospitalId ->
+                                    onMarkerClicked(hospitalId)
+                                },
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            is HospitalSearchState.ScreenState.ListView -> {
+                HospitalListViewer(
                     hospitalList = hospitals,
                     rowFilters = {
                         RowChipFilters(
@@ -328,86 +404,95 @@ private fun HospitalSearchScreenContents(
                         .padding(horizontal = spacingMedium, vertical = spacingXL)
                 ) {
                     FabIcons(
-                        isMapListOpened = isMapListOpened,
-                        onOpenListButtonClicked = { isMapListOpened = !isMapListOpened },
+                        isMapListOpened = screenState == HospitalSearchState.ScreenState.ListView,
+                        onOpenListButtonClicked = { onScreenStateChanged(HospitalSearchState.ScreenState.MapView) },
                         onMoveToCurrentLocationFabClicked = onMoveToCurrentLocationFabClicked
                     )
                 }
-            } else {
-                NaverMapView(
-                    currentLocation = currentLocation,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center),
-                    places = hospitals.map { it.toMarker() },
-                    onMapReady = { map -> naverMap = map },
-                    onMapBoundsChange = {},
-                    selectedHospitalId = selectedHospitalId,
-                    onMarkerClicked = onMarkerClicked,
-                    cameraPosition = cameraPosition
-                )
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    if (!isMapListOpened) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            RowChipFilters(
-                                currentSortOption = currentSortOption,
-                                isOpenedHospitalOnly = isOpenedHospitalOnly,
-                                onRegionChipClicked = onRegionChipClicked,
-                                onSpeciesChipClicked = onSpeciesChipClicked,
-                                onSortingOptionChipClicked = onSortingOptionChipClicked,
-                                onIsOpenFilterChipClicked = onIsOpenFilterChipClicked
-                            )
-                            BasicButton(
-                                text = "현 지도에서 검색",
-                                size = BasicButtonSize.XS,
-                                leadingIcon = IconResource.Vector(Icons.Default.Refresh),
-                                buttonType = BasicButtonType.SECONDARY,
-                                radius = 1000.dp,
-                                onClicked = {
-                                    val bounds = naverMap?.contentBounds
-                                    if (bounds != null) {
-                                        val domainBounds = MapBounds(
-                                            minLat = bounds.southWest.latitude,
-                                            minLng = bounds.southWest.longitude,
-                                            maxLat = bounds.northEast.latitude,
-                                            maxLng = bounds.northEast.longitude
-                                        )
-                                        onMapBoundsChange(domainBounds)
-                                    }
-                                }
-                            )
-                        }
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        FabIcons(
-                            isMapListOpened = isMapListOpened,
-                            onOpenListButtonClicked = { isMapListOpened = !isMapListOpened },
-                            onMoveToCurrentLocationFabClicked = onMoveToCurrentLocationFabClicked
-                        )
-
-                        if (hospitals.isNotEmpty() && !isMapListOpened) {
-                            HospitalCarousel(
-                                hospitals = hospitals,
-                                selectedHospitalId = selectedHospitalId,
-                                onHospitalSelected = { hospitalId ->
-                                    onMarkerClicked(hospitalId)
-                                },
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            )
-                        }
-                    }
-                }
             }
+
+            HospitalSearchState.ScreenState.SearchView -> {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    BasicIcon(
+                        iconResource = IconResource.Vector(Icons.Default.ChevronLeft),
+                        contentDescription = "Back",
+                        size = iconSizeMedium,
+                        tint = colorScheme.icon.dark
+                    )
+                    BasicInputTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = "병원 이름을 검색하세요",
+                        value = queryString,
+                        onValueChange = { queryString = it },
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        singleLine = true
+                    )
+                    Text(
+                        text = "닫기",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = colorScheme.text.secondary,
+                        modifier = Modifier.padding(horizontal = spacingXS)
+                    )
+                }
+                HospitalQueryPage(
+                    recentQueries = recentQueries,
+                    recentViewedHospitals = recentViewedHospitals,
+                    onRecentQueryClicked = { selectedQuery: String ->
+                        queryString = selectedQuery
+                        onApplyFilter(
+                            queryString,
+                            currentHospitalSearchParameters.region,
+                            currentHospitalSearchParameters.district,
+                            currentHospitalSearchParameters.animal
+                        )
+                    },
+                    onRecentViewedHospitalClicked = { selectedHospital: Hospital ->
+                        onApplyFilter(
+                            selectedHospital.name,
+                            currentHospitalSearchParameters.region,
+                            currentHospitalSearchParameters.district,
+                            currentHospitalSearchParameters.animal
+                        )
+                    },
+                    onRegionChipClicked = {},
+                    onSpeciesChipClicked = {},
+                    currentDistrict = currentHospitalSearchParameters.district,
+                    currentAnimalSpecies = currentHospitalSearchParameters.animal,
+                )
+            }
+
+            else -> {}
         }
+    }
+}
+
+@Composable
+private fun EmptyResultContent() {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(R.drawable.image_no_result),
+            contentDescription = "no result image",
+            modifier = Modifier.fillMaxSize(0.22f)
+        )
+        Text(
+            text = "주변 병원을 찾을 수 없어요.",
+            style = MaterialTheme.typography.titleSmall,
+            color = colorScheme.text.tertiary,
+            modifier = Modifier.padding(bottom = spacingSmall)
+        )
+        Text(
+            text = "좀 더 넓은 지역으로 검색해보세요.",
+            style = MaterialTheme.typography.bodySmall,
+            color = colorScheme.text.tertiary,
+        )
     }
 }
 
@@ -573,14 +658,28 @@ private fun HospitalCarousel(
 @Composable
 private fun HospitalSearchScreenPreview() {
     PetbulanceTheme {
-        HospitalSearchScreen(
-            navController = rememberNavController(),
-            argument = HospitalSearchArgument(
-                intent = { },
-                state = HospitalSearchState.Init,
-                event = MutableSharedFlow()
-            ),
-            data = HospitalSearchData.stub()//.copy(hospitalsResult = emptyList())
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HospitalSearchScreen(
+                navController = rememberNavController(),
+                argument = HospitalSearchArgument(
+                    intent = { },
+                    state = HospitalSearchState.ScreenState.MapView,
+                    event = MutableSharedFlow()
+                ),
+                data = HospitalSearchData.stub()//.copy(hospitalsResult = emptyList())
+            )
+            HospitalSearchScreen(
+                navController = rememberNavController(),
+                argument = HospitalSearchArgument(
+                    intent = { },
+                    state = HospitalSearchState.ScreenState.SearchView,
+                    event = MutableSharedFlow()
+                ),
+                data = HospitalSearchData.stub()//.copy(hospitalsResult = emptyList())
+            )
+        }
     }
 }

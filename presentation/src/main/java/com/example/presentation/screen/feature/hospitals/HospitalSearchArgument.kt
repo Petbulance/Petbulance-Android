@@ -13,8 +13,16 @@ data class HospitalSearchArgument(
 )
 
 sealed class HospitalSearchState {
-    data object Init : HospitalSearchState()
-    data object OnProgress : HospitalSearchState()
+    sealed class DataState: HospitalSearchState() {
+        data object Init : DataState()
+        data object OnProgress : DataState()
+    }
+    sealed class ScreenState: HospitalSearchState() {
+        data object MapView: ScreenState()
+        data object ListView: ScreenState()
+        data object NoResultView: ScreenState()
+        data object SearchView: ScreenState()
+    }
 }
 
 sealed class HospitalSearchIntent {
@@ -30,6 +38,8 @@ sealed class HospitalSearchIntent {
     data object MoveCameraToCurrentLocation : HospitalSearchIntent()
 
     data object LoadMore : HospitalSearchIntent()
+
+    data class ChangeScreenState(val state: HospitalSearchState): HospitalSearchIntent()
 }
 
 enum class FilterTab {
