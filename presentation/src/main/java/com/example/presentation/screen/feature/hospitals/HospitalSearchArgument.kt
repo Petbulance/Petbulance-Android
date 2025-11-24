@@ -2,7 +2,7 @@ package com.example.presentation.screen.feature.hospitals
 
 import android.content.Context
 import com.example.domain.model.common.MapBounds
-import com.example.domain.usecase.feature.hospitals.SearchHospitalParams
+import com.example.domain.model.feature.hospitals.HospitalSearchParams
 import com.example.presentation.utils.error.ErrorEvent
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -13,25 +13,24 @@ data class HospitalSearchArgument(
 )
 
 sealed class HospitalSearchState {
-    sealed class DataState: HospitalSearchState() {
+    sealed class DataState : HospitalSearchState() {
         data object Init : DataState()
         data object OnProgress : DataState()
     }
-    sealed class ScreenState: HospitalSearchState() {
-        data object MapView: ScreenState()
-        data object ListView: ScreenState()
-        data object NoResultView: ScreenState()
-        data object SearchView: ScreenState()
+
+    sealed class ScreenState : HospitalSearchState() {
+        data object MapView : ScreenState()
+        data object ListView : ScreenState()
+        data object NoResultView : ScreenState()
+        data object SearchView : ScreenState()
     }
 }
 
 sealed class HospitalSearchIntent {
 
-    data class FetchCurrentLocation(val context: Context): HospitalSearchIntent()
+    data class FetchCurrentLocation(val context: Context) : HospitalSearchIntent()
 
-    data class SearchNearByHospitals(val bounds: MapBounds): HospitalSearchIntent()
-
-    data class UpdateQuery(val newQuery: SearchHospitalParams): HospitalSearchIntent()
+    data class SearchNearByHospitals(val bounds: MapBounds) : HospitalSearchIntent()
 
     data class UpdateSelectedHospital(val selectedHospitalId: Long) : HospitalSearchIntent()
 
@@ -39,7 +38,13 @@ sealed class HospitalSearchIntent {
 
     data object LoadMore : HospitalSearchIntent()
 
-    data class ChangeScreenState(val state: HospitalSearchState): HospitalSearchIntent()
+    data class ChangeScreenState(val state: HospitalSearchState) : HospitalSearchIntent()
+
+    data class UpdateTempFilters(val params: HospitalSearchParams) : HospitalSearchIntent()
+
+    data object ApplyFilters : HospitalSearchIntent()
+
+    data object OpenFilter : HospitalSearchIntent()
 }
 
 enum class FilterTab {
@@ -51,19 +56,6 @@ sealed class HospitalFilterBottomSheetState {
     data object OnProgress : HospitalFilterBottomSheetState()
 }
 
-sealed class HospitalFilterIntent {
-    data class OnTabChanged(val tab: FilterTab) : HospitalFilterIntent()
-    data class OnRegionChanged(val region: String, val district: String) : HospitalFilterIntent()
-    data class OnAnimalSpeciesChanged(val species: String, val isSelected: Boolean) : HospitalFilterIntent()
-    data object OnFilterReset : HospitalFilterIntent()
-    data class OnInitializeFilter(val initialTab: FilterTab, val regions: Map<String, List<String>>, val animalSpecies: List<String>) : HospitalFilterIntent()
-    data object OnApplyFilter : HospitalFilterIntent()
-}
-
-sealed class HospitalFilterEvent {
-    data object CloseBottomSheet : HospitalFilterEvent()
-}
-
 sealed class HospitalSearchEvent {
     sealed class DataFetch : HospitalSearchEvent() {
         data class Error(
@@ -73,7 +65,7 @@ sealed class HospitalSearchEvent {
     }
 
     sealed class Permission : HospitalSearchEvent() {
-        data object LackOfPermission: Permission()
-        data object NoPermissionGranted: Permission()
+        data object LackOfPermission : Permission()
+        data object NoPermissionGranted : Permission()
     }
 }

@@ -27,7 +27,8 @@ fun NavGraphBuilder.hospitalSearchDestination(navController: NavController) {
         val data: HospitalSearchData = let {
             val currentLocation by viewModel.currentLocation.collectAsStateWithLifecycle()
             val hospitalsResult by viewModel.hospitalsResult.collectAsStateWithLifecycle()
-            val searchHospitalParams by viewModel.searchHospitalParams.collectAsStateWithLifecycle()
+            val searchHospitalParams by viewModel.hospitalSearchParams.collectAsStateWithLifecycle()
+            val tempSearchParams by viewModel.tempSearchParams.collectAsStateWithLifecycle()
             val currentSelectedHospitalId by viewModel.currentSelectedHospitalId.collectAsStateWithLifecycle()
             val cameraPosition by viewModel.cameraPosition.collectAsStateWithLifecycle()
             val isLastPage by viewModel.isLastPage.collectAsStateWithLifecycle()
@@ -35,7 +36,8 @@ fun NavGraphBuilder.hospitalSearchDestination(navController: NavController) {
             HospitalSearchData(
                 currentLocation = currentLocation,
                 hospitalsResult = hospitalsResult,
-                searchHospitalParams = searchHospitalParams,
+                hospitalSearchParams = searchHospitalParams,
+                tempSearchParams = tempSearchParams,
                 cameraPosition = cameraPosition,
                 currentSelectedHospitalId = currentSelectedHospitalId,
                 isLastPage = isLastPage

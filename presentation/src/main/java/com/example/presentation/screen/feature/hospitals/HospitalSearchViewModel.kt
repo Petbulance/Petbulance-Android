@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.common.MapBounds
 import com.example.domain.model.feature.hospitals.Hospital
-import com.example.domain.usecase.feature.hospitals.SearchHospitalParams
+import com.example.domain.model.feature.hospitals.HospitalSearchParams
 import com.example.domain.usecase.feature.hospitals.SearchHospitalsUseCase
 import com.example.presentation.utils.BaseViewModel
 import com.google.android.gms.location.LocationServices
@@ -52,8 +52,11 @@ class HospitalSearchViewModel @Inject constructor(
     private val _currentLocation = MutableStateFlow(defaultLocation)
     val currentLocation: StateFlow<Location> = _currentLocation
 
-    private val _searchHospitalParams = MutableStateFlow(SearchHospitalParams())
-    val searchHospitalParams: StateFlow<SearchHospitalParams> = _searchHospitalParams
+    private val _hospitalSearchParams = MutableStateFlow(HospitalSearchParams())
+    val hospitalSearchParams: StateFlow<HospitalSearchParams> = _hospitalSearchParams
+
+    private val _tempSearchParams = MutableStateFlow(HospitalSearchParams())
+    val tempSearchParams: StateFlow<HospitalSearchParams> = _tempSearchParams // 임시 파라미터
 
     private val _currentSelectedHospitalId = MutableStateFlow(0L)
     val currentSelectedHospitalId: StateFlow<Long> = _currentSelectedHospitalId
@@ -65,7 +68,7 @@ class HospitalSearchViewModel @Inject constructor(
     val isLastPage: StateFlow<Boolean> = _isLastPage
 
     private var currentPage = 0
-    private var lastQuery: SearchHospitalParams? = null
+    private var lastQuery: HospitalSearchParams? = null
 
     private var searchJob: Job? = null
 
@@ -80,13 +83,10 @@ class HospitalSearchViewModel @Inject constructor(
                 launch { checkAndFetchLocation(intent.context) }
             }
 
-            is HospitalSearchIntent.UpdateQuery -> {
-                launch { onQueryChanged(intent.newQuery) }
-            }
-
             is HospitalSearchIntent.SearchNearByHospitals -> {
                 launch { searchNearByHospitals(intent.bounds) }
             }
+
 
             is HospitalSearchIntent.UpdateSelectedHospital -> {
                 _currentSelectedHospitalId.value = intent.selectedHospitalId
@@ -103,6 +103,19 @@ class HospitalSearchViewModel @Inject constructor(
 
             is HospitalSearchIntent.LoadMore -> {
                 searchHospital(isNewQuery = false)
+            }
+
+            is HospitalSearchIntent.UpdateTempFilters -> {
+                _tempSearchParams.value = intent.params
+            }
+            // 4. '적용' 시점에 temp를 searchParams에 반영하고 검색 실행
+            is HospitalSearchIntent.ApplyFilters -> {
+                _hospitalSearchParams.value = _tempSearchParams.value
+                searchHospitals()
+            }
+            // 5. 필터 UI가 열릴 때 searchParams -> temp 동기화
+            is HospitalSearchIntent.OpenFilter -> {
+                _tempSearchParams.value = _hospitalSearchParams.value
             }
         }
     }
@@ -130,7 +143,7 @@ class HospitalSearchViewModel @Inject constructor(
                 _currentLocation.value = fetchedLocation
                 _cameraPosition.value = fetchedLocation
 
-                _searchHospitalParams.value = _searchHospitalParams.value.copy(
+                _hospitalSearchParams.value = _hospitalSearchParams.value.copy(
                     lat = fetchedLocation.latitude,
                     lng = fetchedLocation.longitude
                 )
@@ -170,29 +183,19 @@ class HospitalSearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun searchNearByHospitals(boundary: MapBounds) {
-        _dataState.value = HospitalSearchState.DataState.OnProgress
-        runCatching {
-            _searchHospitalParams.value = SearchHospitalParams(
-                lat = _currentLocation.value.latitude,
-                lng = _currentLocation.value.longitude,
-                bounds = boundary
-            )
-            searchHospital(isNewQuery = true)
-        }.onFailure { ex ->
-            _eventFlow.emit(
-                HospitalSearchEvent.DataFetch.Error(
-                    userMessage = "병원 정보를 불러오는데 실패했어요.",
-                    exceptionMessage = ex.message
-                )
-            )
-        }
-        _dataState.value = HospitalSearchState.DataState.Init
+    private fun searchNearByHospitals(boundary: MapBounds) {
+        _hospitalSearchParams.value = _hospitalSearchParams.value.copy(
+            lat = _currentLocation.value.latitude,
+            lng = _currentLocation.value.longitude,
+            bounds = boundary,
+            q = null,
+            region = null,
+            district = null
+        )
+        searchHospital(isNewQuery = true)
     }
 
-    private fun onQueryChanged(newParams: SearchHospitalParams) {
-        if (newParams == _searchHospitalParams.value) return
-        _searchHospitalParams.value = newParams
+    private fun searchHospitals() {
         searchHospital(isNewQuery = true)
     }
 
@@ -205,13 +208,13 @@ class HospitalSearchViewModel @Inject constructor(
                 currentPage = 0
                 _isLastPage.value = false
                 _hospitalsResult.value = emptyList()
-                lastQuery = _searchHospitalParams.value.copy()
+                lastQuery = _hospitalSearchParams.value.copy()
             } else {
                 if (_isLastPage.value || _dataState.value == HospitalSearchState.DataState.OnProgress) return@launch
                 currentPage += 1
             }
 
-            val params = _searchHospitalParams.value.copy(page = currentPage)
+            val params = _hospitalSearchParams.value.copy(page = currentPage)
             _dataState.value = HospitalSearchState.DataState.OnProgress
 
             runCatching {

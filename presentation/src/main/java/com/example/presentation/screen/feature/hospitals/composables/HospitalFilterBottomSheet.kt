@@ -1,7 +1,6 @@
-package com.example.presentation.screen.feature.hospitals
+package com.example.presentation.screen.feature.hospitals.composables
 
 import android.Manifest.permission_group.PHONE
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,6 +63,7 @@ import com.example.presentation.component.ui.spacingSmall
 import com.example.presentation.component.ui.spacingXS
 import com.example.presentation.component.ui.spacingXXL
 import com.example.presentation.component.ui.spacingXXS
+import com.example.presentation.screen.feature.hospitals.FilterTab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

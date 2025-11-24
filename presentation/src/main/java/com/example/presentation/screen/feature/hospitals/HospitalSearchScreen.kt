@@ -4,22 +4,16 @@ import android.Manifest
 import android.Manifest.permission_group.PHONE
 import android.location.Location
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -47,10 +41,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.domain.model.common.MapBounds
 import com.example.domain.model.feature.hospitals.Hospital
+import com.example.domain.model.feature.hospitals.HospitalSearchParams
 import com.example.domain.model.type.AnimalSpecies
 import com.example.domain.model.type.HospitalSortOption
 import com.example.domain.model.type.toKorean
-import com.example.domain.usecase.feature.hospitals.SearchHospitalParams
 import com.example.presentation.R
 import com.example.presentation.component.theme.PetbulanceTheme
 import com.example.presentation.component.theme.PetbulanceTheme.colorScheme
@@ -75,6 +69,11 @@ import com.example.presentation.component.ui.spacingMedium
 import com.example.presentation.component.ui.spacingSmall
 import com.example.presentation.component.ui.spacingXL
 import com.example.presentation.component.ui.spacingXS
+import com.example.presentation.screen.feature.hospitals.composables.FineLocationPermissionRequestDialog
+import com.example.presentation.screen.feature.hospitals.composables.HospitalCarousel
+import com.example.presentation.screen.feature.hospitals.composables.HospitalFilterBottomSheet
+import com.example.presentation.screen.feature.hospitals.composables.HospitalListViewer
+import com.example.presentation.screen.feature.hospitals.composables.HospitalQueryPage
 import com.example.presentation.utils.NaverMapView
 import com.example.presentation.utils.error.ErrorDialog
 import com.example.presentation.utils.error.ErrorDialogState
@@ -83,7 +82,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.naver.maps.map.NaverMap
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlin.math.abs
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -105,26 +103,36 @@ fun HospitalSearchScreen(
         argument.intent(HospitalSearchIntent.ChangeScreenState(newState))
     }
 
-    val updateQuery =
+    val updateTempQuery =
         { q: String?, region: String?, district: String?, animalSpecies: List<AnimalSpecies>? ->
             argument.intent(
-                HospitalSearchIntent.UpdateQuery(
-                    newQuery = SearchHospitalParams(
+                HospitalSearchIntent.UpdateTempFilters(
+                    params = HospitalSearchParams(
                         q = q,
                         region = region,
                         district = district,
                         animal = animalSpecies
-                    )
+                    ),
                 )
             )
         }
+
+    val applyFilters = {
+        argument.intent(HospitalSearchIntent.ApplyFilters)
+    }
+
+    val onFilterOpened = {
+        argument.intent(HospitalSearchIntent.OpenFilter)
+    }
+
     var isFineLocationPermissionRequestDialogVisible by remember { mutableStateOf(false) }
 
     val currentLocation = data.currentLocation
     val hospitalsResult = data.hospitalsResult
-    val selectedHospitalId = data.currentSelectedHospitalId
-    val currentHospitalSearchParameters = data.searchHospitalParams
+    val currentHospitalSearchParameters = data.hospitalSearchParams
+    val tempSearchParams = data.tempSearchParams
     val cameraPosition = data.cameraPosition
+    val selectedHospitalId = data.currentSelectedHospitalId
     val isLastPage = data.isLastPage
 
     var isOpenedHospitalOnly by remember { mutableStateOf(currentHospitalSearchParameters.openNowOnly) }
@@ -166,7 +174,10 @@ fun HospitalSearchScreen(
                     trailingIcons = listOf(
                         Pair(
                             IconResource.Drawable(R.drawable.search)
-                        ) { updateScreenState(HospitalSearchState.ScreenState.SearchView) }
+                        ) {
+                            onFilterOpened()
+                            updateScreenState(HospitalSearchState.ScreenState.SearchView)
+                        }
                     )
                 ),
             )
@@ -204,10 +215,12 @@ fun HospitalSearchScreen(
                 },
                 onRegionChipClicked = {
                     initialFilterTab = FilterTab.REGION
+                    onFilterOpened()
                     isFilterBottomSheetVisible = true
                 },
                 onSpeciesChipClicked = {
                     initialFilterTab = FilterTab.ANIMAL_SPECIES
+                    onFilterOpened()
                     isFilterBottomSheetVisible = true
                 },
                 onSortingOptionChipClicked = {
@@ -216,8 +229,11 @@ fun HospitalSearchScreen(
                 onIsOpenFilterChipClicked = { isOpenedHospitalOnly = !isOpenedHospitalOnly },
                 onMoveToCurrentLocationFabClicked = { argument.intent(HospitalSearchIntent.MoveCameraToCurrentLocation) },
                 onApplyFilter = { q, r, d, a ->
-                    updateQuery(q, r, d, a)
-                }
+                    updateTempQuery(q, r, d, a)
+                },
+                updateTempQuery = updateTempQuery,
+                applyFilters = applyFilters,
+                onFilterOpened = onFilterOpened
             )
         }
     }
@@ -248,7 +264,8 @@ fun HospitalSearchScreen(
             selectedDistrict = currentHospitalSearchParameters.district,
             selectedAnimalSpecies = currentHospitalSearchParameters.animal,
             onApplyFilter = { region, district, animalSpecies ->
-                updateQuery(null, region, district, animalSpecies)
+                updateTempQuery(null, region, district, animalSpecies)
+                applyFilters()
                 isFilterBottomSheetVisible = false
             },
             onCurrentRegionDetectButtonClicked = { /* TODO : 현위치 선택 */ },
@@ -269,7 +286,7 @@ fun HospitalSearchScreen(
 private fun HospitalSearchScreenContents(
     screenState: HospitalSearchState,
     currentLocation: Location,
-    currentHospitalSearchParameters: SearchHospitalParams,
+    currentHospitalSearchParameters: HospitalSearchParams,
     selectedHospitalId: Long,
     hospitalsResult: List<Hospital>,
     isOpenedHospitalOnly: Boolean,
@@ -287,7 +304,10 @@ private fun HospitalSearchScreenContents(
     onSortingOptionChipClicked: () -> Unit,
     onIsOpenFilterChipClicked: () -> Unit,
     onMoveToCurrentLocationFabClicked: () -> Unit,
-    onApplyFilter: (String?, String?, String?, List<AnimalSpecies>?) -> Unit
+    onApplyFilter: (String?, String?, String?, List<AnimalSpecies>?) -> Unit,
+    updateTempQuery: (String?, String?, String?, List<AnimalSpecies>?) -> Unit,
+    applyFilters: () -> Unit,
+    onFilterOpened: () -> Unit
 ) {
     val hospitals = when (currentSortOption) {
         HospitalSortOption.DISTANCE -> hospitalsResult.sortedBy { it.distanceMeters }
@@ -596,54 +616,6 @@ private fun FabIcons(
                         .clickable { onMoveToCurrentLocationFabClicked() }
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun HospitalCarousel(
-    hospitals: List<Hospital>,
-    selectedHospitalId: Long,
-    onHospitalSelected: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val listState = rememberLazyListState()
-    val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-
-    LaunchedEffect(selectedHospitalId, hospitals) {
-        val selectedIndex = hospitals.indexOfFirst { it.hospitalId == selectedHospitalId }
-        if (selectedIndex != -1) {
-            listState.animateScrollToItem(selectedIndex)
-        }
-    }
-
-    LaunchedEffect(listState.isScrollInProgress) {
-        if (!listState.isScrollInProgress) {
-            val visibleItemsInfo = listState.layoutInfo.visibleItemsInfo
-            val centralItem = visibleItemsInfo.minByOrNull {
-                abs(it.offset + it.size / 2)
-            }
-            if (centralItem != null) {
-                val centralHospitalId = hospitals[centralItem.index].hospitalId
-                if (centralHospitalId != selectedHospitalId) {
-                    onHospitalSelected(centralHospitalId)
-                }
-            }
-        }
-    }
-
-    LazyRow(
-        state = listState,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = spacingMedium),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        flingBehavior = flingBehavior
-    ) {
-        items(hospitals, key = { it.hospitalId }) { hospital ->
-            HospitalCard(hospital = hospital, modifier = Modifier.fillParentMaxWidth())
         }
     }
 }
